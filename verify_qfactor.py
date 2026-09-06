@@ -200,6 +200,19 @@ def main():
         print("[SKIP] tests 19-21 (modèle disque : scipy/core non disponibles "
               "dans ce dépôt)")
 
+    # 22. courbe de résonance MESURÉE (digitalisée) : Q de bande passante
+    #     -3 dB dans l'encadrement a priori et à ±30 % du nominal
+    mc = np.load("malleron_measured_curve.npz")
+    fm, am = mc["f_kHz"], mc["alpha"]
+    i = int(np.argmax(am))
+    idxm = np.where(am > am[i] / np.sqrt(2))[0]
+    Qbw_meas = fm[i] / (fm[idxm[-1]] - fm[idxm[0]])
+    check("courbe mesurée : Q(-3 dB) dans l'encadrement et à ±30 % du nominal",
+          blo["Q"] <= Qbw_meas <= bhi["Q"]
+          and abs(Qbw_meas / bud["Q"] - 1) < 0.30,
+          f"Q_bw mesuré = {Qbw_meas:.1f} vs nominal {bud['Q']:.1f}, "
+          f"encadrement [{blo['Q']:.0f};{bhi['Q']:.0f}]")
+
     n_ok = sum(ok for _, ok in TESTS)
     print(f"\n{n_ok}/{len(TESTS)} PASS")
     return n_ok == len(TESTS)

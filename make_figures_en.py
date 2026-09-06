@@ -187,16 +187,20 @@ def main():
     hE, hQ, hP, hS, s_ep = cc.main()
     sys.stdout = old
     ms = qm.SAMPLES[qm.REF]["meas"]
-    fig, ax = plt.subplots(figsize=(5.6, 3.3))
+    fig, ax = plt.subplots(figsize=(5.9, 3.4))
+    mc = np.load("malleron_measured_curve.npz")
+    ax.plot(mc["f_kHz"], mc["alpha"], ".", color=RED, ms=2.5, alpha=0.6,
+            label="measured resonance curve (digitized)")
     ax.plot(hP["freqs"] / 1e3, hP["alpha"], "--", color=GREY,
             label="2-D FEM, predicted per-layer losses")
     ax.plot(hS["freqs"] / 1e3, hS["alpha"], "-", color=BLUE,
             label=f"idem + epoxy stiffening (s = {s_ep:.2f})")
-    ax.plot(ms["f_r"] / 1e3, ms["a_res"], "*", color=RED, ms=15,
-            label=f"measured ({ms['a_res']} V cm$^{{-1}}$ Oe$^{{-1}}$)")
+    ax.plot(ms["f_r"] / 1e3, ms["a_res"], "*", color=RED, ms=13,
+            label=f"tabulated peak ({ms['a_res']} V cm$^{{-1}}$ Oe$^{{-1}}$)")
     ax.axhline(ms["a_stat"], color=GREY, ls=":", lw=1.0)
-    ax.text(51, ms["a_stat"] * 1.35, "measured static level", fontsize=7.5,
+    ax.text(51, ms["a_stat"] * 1.5, "measured static level", fontsize=7.5,
             color=GREY)
+    ax.set_xlim(50, 85)
     ax.set_xlabel("frequency [kHz]")
     ax.set_ylabel("$\\alpha_E$ [V cm$^{-1}$ Oe$^{-1}$]")
     ax.legend(fontsize=8)
