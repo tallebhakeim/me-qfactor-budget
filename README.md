@@ -37,7 +37,8 @@ Metglas laminates measured in K. Malleron's thesis (Sorbonne Universite,
 ```bash
 python3 run_budget.py        # full report + 3-panel figure
 python3 verify_qfactor.py    # verification suite (21 tests; 17 self-contained)
-python3 make_figures_en.py   # the 6 figures of the manuscript
+python3 make_figures_en.py   # manuscript figures 1-6
+python3 run_disk_transfer.py # disk transfer report + figure 7
 ```
 
 Requires Python 3 with numpy and matplotlib (scipy for the disk extension).
@@ -51,7 +52,7 @@ verification suite skips it cleanly when absent. All budget results are
 produced by the self-contained scripts above.
 
 `make_refs.py` rebuilds `refs_verified.json`, the Crossref-canonical
-metadata of the 35 references: the manuscript bibliography is generated
+metadata of the 37 references: the manuscript bibliography is generated
 from this file, so no reference metadata is ever typed from memory.
 
 ## Files
@@ -62,7 +63,8 @@ from this file, so no reference metadata is ever typed from memory.
 | `demag_lambda.py` | exact magnetometric demagnetizing factor N of a rectangular prism (self-tests: cube = 1/3, sum rule = 1) and lambda = (1-N)/(1+chi N) |
 | `qfactor_hysteresis.py` | generalized Rayleigh minor-loop loss, stress-equivalent field swing |
 | `run_budget.py` | report: reference budget, 4-sample validation, Q(h_ac), inverse bounds |
-| `verify_qfactor.py` | 18 automated tests (analytic limits, sum rules, bandwidth-budget identity, mesh convergence, sample brackets) |
+| `qfactor_disk.py`, `run_disk_transfer.py` | radial-mode disk transfer (36 identified Q, Rizzo 2020) |
+| `verify_qfactor.py` | 21 automated tests (analytic limits, sum rules, bandwidth-budget identity, mesh convergence, sample brackets) |
 | `make_figures_en.py` | manuscript figures |
 | `fig_en_*.png` | pre-built figures |
 
