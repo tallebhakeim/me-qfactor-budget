@@ -44,9 +44,14 @@ def fig_schematic():
                                  arrowstyle="-|>", mutation_scale=14,
                                  color=RED))
     a1.text(17.3, 2.0, "$H_{dc}+h_{ac}$", color=RED, ha="center", fontsize=9)
-    a1.plot([0.5, 4.0], [-0.05, -0.05], lw=2.5, color=GREY)
-    a1.text(2.2, -0.38, "electrodes", fontsize=7.5, color=GREY, ha="center")
-    a1.plot([0.5, 4.0], [1.03, 1.03], lw=2.5, color=GREY)
+    # électrodes sur TOUTE la longueur du PZT (faces haut et bas), comme
+    # sur les échantillons et dans les modèles (eq. (2) : <S> sur L_p)
+    a1.plot([0.0, 20.0], [-0.05, -0.05], lw=2.5, color=GREY,
+            solid_capstyle="butt")
+    a1.text(17.0, -0.38, "full-length electrodes", fontsize=7.5, color=GREY,
+            ha="center")
+    a1.plot([0.0, 20.0], [1.05, 1.05], lw=2.5, color=GREY,
+            solid_capstyle="butt")
     a1.set_xlim(-1.2, 21.5); a1.set_ylim(-1.5, 3.1)
     a1.axis("off"); a1.set_title("(a) reference bilayer (L–T mode)",
                                  fontsize=9.5)
@@ -201,9 +206,10 @@ def main():
     ax.text(51, ms["a_stat"] * 1.5, "measured static level", fontsize=7.5,
             color=GREY)
     ax.set_xlim(50, 85)
+    ax.set_ylim(0, 36)                     # marge pour la légende
     ax.set_xlabel("frequency [kHz]")
     ax.set_ylabel("$\\alpha_E$ [V cm$^{-1}$ Oe$^{-1}$]")
-    ax.legend(fontsize=8)
+    ax.legend(fontsize=7.5, loc="upper left", framealpha=0.95)
     fig.tight_layout(); fig.savefig("fig_en_fem2d.png", dpi=DPI)
     plt.close(fig)
 

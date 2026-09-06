@@ -46,8 +46,29 @@ biais, chi_int atteint 30-47 : les deux canaux calculés s'effondrent
 EXCÉDENTAIRES de parois (Bertotti), canal absent du budget, dominant
 uniquement dans ce régime.""")
 
-    # ---------------------------- figure : (a) scatter hauts biais, (b) Q(B)
-    fig, (a1, a2) = plt.subplots(1, 2, figsize=(9.6, 3.6))
+    # ------- figure 2x2 : (a) schéma, (b) scatter, (c) Q(B), (d) courbe mesurée
+    from matplotlib.patches import Rectangle, FancyArrowPatch
+    fig, ((a0, a1), (a2, a3)) = plt.subplots(2, 2, figsize=(9.8, 7.0))
+
+    # (a) schéma du disque tricouche M-P-M (échantillon C)
+    a0.add_patch(Rectangle((0, 0.0), 16, 1.0, fc="#9fb4cc", ec="k", lw=0.8))
+    a0.add_patch(Rectangle((0, 1.0), 16, 2.0, fc="#f0c674", ec="k", lw=0.8))
+    a0.add_patch(Rectangle((0, 3.0), 16, 1.0, fc="#9fb4cc", ec="k", lw=0.8))
+    a0.text(8, 3.5, "Terfenol-D (1 mm)", ha="center", va="center", fontsize=8)
+    a0.text(8, 2.0, "PIC181 (2 mm), radial mode", ha="center", va="center",
+            fontsize=8)
+    a0.text(8, 0.5, "Terfenol-D (1 mm)", ha="center", va="center", fontsize=8)
+    a0.annotate("", xy=(16, -0.7), xytext=(0, -0.7),
+                arrowprops=dict(arrowstyle="<->", lw=0.8))
+    a0.text(8, -1.25, "Ø 16 mm", ha="center", fontsize=8)
+    a0.add_patch(FancyArrowPatch((17.0, 2.0), (20.5, 2.0),
+                                 arrowstyle="-|>", mutation_scale=13,
+                                 color=RED))
+    a0.text(18.7, 2.5, "B$_{dc}$ + b$_{ac}$", color=RED, ha="center",
+            fontsize=8.5)
+    a0.set_xlim(-1.5, 22); a0.set_ylim(-1.9, 4.7)
+    a0.axis("off")
+    a0.set_title("(a) sample C: M-P-M disk (thesis Table 4.5)", fontsize=9)
     marks = dict(zip(qd.SAMPLES, "osD^vP"))
     for s in qd.SAMPLES:
         for j in (0, 1):                      # 0.1 et 0.058 T
@@ -59,7 +80,7 @@ uniquement dans ce régime.""")
                     color=GREY, alpha=0.15, label="factor-2 band")
     a1.set_xlim(lim); a1.set_ylim(lim)
     a1.set_xlabel("measured Q (identified)"); a1.set_ylabel("predicted Q")
-    a1.set_title("(a) linear-bias regime (0.1 and 0.058 T)", fontsize=9.5)
+    a1.set_title("(b) linear-bias regime (0.1 and 0.058 T)", fontsize=9)
     a1.legend(fontsize=6.5, loc="upper left")
 
     for s, c in (("A (M-P, 16)", RED), ("D (P-M-P, 16)", BLUE)):
@@ -71,8 +92,25 @@ uniquement dans ce régime.""")
     a2.text(0.017, 800, "domain-wall\nexcess losses\n(χ = 30-47)",
             fontsize=7, color=GREY)
     a2.set_xlabel("bias field B$_{dc}$ [T]"); a2.set_ylabel("Q")
-    a2.set_title("(b) bias dependence", fontsize=9.5)
+    a2.set_title("(c) bias dependence", fontsize=9)
     a2.legend(fontsize=6.5)
+    # (d) courbe de résonance mesurée (enveloppe fig 2.19) vs lorentziennes
+    mc = np.load("rizzo_measured_curve.npz")
+    fmc, vmc = mc["f_kHz"], mc["V_rms"]
+    ipk = int(np.argmax(vmc))
+    fpk, vpk = fmc[ipk], vmc[ipk]
+    fl = np.linspace(135, 155, 500)
+    for Qv, col, lab in ((173, GREY, "Lorentzian, identified Q = 173"),
+                         (276, BLUE, "Lorentzian, predicted Q = 276")):
+        a3.plot(fl, vpk / np.sqrt(1 + (2 * Qv * (fl - fpk) / fpk)**2),
+                "-" if col == BLUE else "--", color=col, label=lab)
+    a3.plot(fmc, vmc, ".", color=RED, ms=2.5, alpha=0.6,
+            label="measured envelope over loads (0.8 mT)")
+    a3.set_xlim(133, 157); a3.set_ylim(0, 40)
+    a3.set_xlabel("frequency [kHz]"); a3.set_ylabel("V$_{RMS}$ [V]")
+    a3.set_title("(d) sample C at 0.1 T: measured resonance", fontsize=9)
+    a3.legend(fontsize=6.5, loc="upper right")
+
     fig.tight_layout()
     fig.savefig("fig_en_disk.png", dpi=200)
     print("\nFigure : fig_en_disk.png")
