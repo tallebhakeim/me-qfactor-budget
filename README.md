@@ -36,14 +36,17 @@ Metglas laminates measured in K. Malleron's thesis (Sorbonne Universite,
 
 ```bash
 python3 run_budget.py        # full report + 3-panel figure
-python3 verify_qfactor.py    # verification suite (17 self-contained tests)
+python3 verify_qfactor.py    # verification suite (21 tests; 17 self-contained)
 python3 make_figures_en.py   # the 6 figures of the manuscript
 ```
 
-Requires Python 3 with numpy and matplotlib only.
+Requires Python 3 with numpy and matplotlib (scipy for the disk extension).
 
 `run_fem2d_crosscheck.py` (test 18, figure 6) additionally requires an
-internal 2-D coupled FEM solver that is not distributed here; the
+internal 2-D coupled FEM solver that is not distributed here, and
+`qfactor_disk.py` (transfer to the radial-mode disk data set of
+G. Rizzo's thesis, Universite Paris-Saclay 2020) requires the internal
+Terfenol magnetization model for its bias dependence; the
 verification suite skips it cleanly when absent. All budget results are
 produced by the self-contained scripts above.
 

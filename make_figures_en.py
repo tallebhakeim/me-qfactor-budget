@@ -184,12 +184,14 @@ def main():
     import sys
     from io import StringIO
     old = sys.stdout; sys.stdout = StringIO()
-    hE, hQ, hP = cc.main()
+    hE, hQ, hP, hS, s_ep = cc.main()
     sys.stdout = old
     ms = qm.SAMPLES[qm.REF]["meas"]
     fig, ax = plt.subplots(figsize=(5.6, 3.3))
-    ax.plot(hP["freqs"] / 1e3, hP["alpha"], "-", color=BLUE,
+    ax.plot(hP["freqs"] / 1e3, hP["alpha"], "--", color=GREY,
             label="2-D FEM, predicted per-layer losses")
+    ax.plot(hS["freqs"] / 1e3, hS["alpha"], "-", color=BLUE,
+            label=f"idem + epoxy stiffening (s = {s_ep:.2f})")
     ax.plot(ms["f_r"] / 1e3, ms["a_res"], "*", color=RED, ms=15,
             label=f"measured ({ms['a_res']} V cm$^{{-1}}$ Oe$^{{-1}}$)")
     ax.axhline(ms["a_stat"], color=GREY, ls=":", lw=1.0)

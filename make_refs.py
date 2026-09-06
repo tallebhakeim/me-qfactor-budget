@@ -22,23 +22,23 @@ WANTED = [
     dict(key="srinivasan2010", doi="10.1146/annurev-matsci-070909-104459"),
     dict(key="bichurin2003lf", doi="10.1103/PhysRevB.68.054402"),
     dict(key="bichurin2003res", doi="10.1103/PhysRevB.68.132408"),
-    dict(key="dong2003", q="Longitudinal and transverse magnetoelectric voltage coefficients of magnetostrictive piezoelectric laminate composite theory", au="Dong"),
+    dict(key="dong2003", doi="10.1109/tuffc.2003.1244741"),
     dict(key="zhai2008", doi="10.1111/j.1551-2916.2008.02259.x"),
-    dict(key="dong2003resonant", q="Enhanced magnetoelectric effects in laminate composites of Terfenol-D Pb(Zr,Ti)O3 under resonant drive", au="Dong"),
+    dict(key="dong2003resonant", doi="10.1063/1.1631756"),
     dict(key="kopyl2021", doi="10.1016/j.mtbio.2021.100149"),
     # --- mesures & modèles de l'équipe
-    dict(key="malleron2019", q="Experimental study of magnetoelectric transducers for power supply of small biomedical devices", au="Malleron"),
+    dict(key="malleron2019", doi="10.1016/j.mejo.2018.01.013"),
     dict(key="malleron2018these", type="manual", text=(
         "K. Malleron, Modelisation multiphysique, caracterisation et "
         "conception de transducteurs magnetoelectriques pour l'alimentation "
         "de capteurs biomedicaux autonomes, PhD thesis, Sorbonne Universite, "
         "Paris (2018), doi:10.70675/41bf3f16z0636z4a7bz830dz3f570115aabb.")),
     dict(key="do2019", doi="10.1109/TMAG.2019.2926237"),
-    dict(key="talleb2015", q="Finite element modeling of a magnetoelectric energy transducer including the load effect", au="Talleb"),
-    dict(key="talleb2022", q="Talleb magnetostrictive energy averaged model", au="Talleb", y=2022),
+    dict(key="talleb2015", doi="10.1109/tmag.2014.2357492"),
+    dict(key="talleb2022", doi="10.1016/j.compstruct.2022.116260"),
     # --- pertes piézo
-    dict(key="holland1967", q="Representation of dielectric elastic and piezoelectric losses by complex coefficients", au="Holland"),
-    dict(key="uchino2001", q="Loss mechanisms in piezoelectrics how to measure different losses separately", au="Uchino"),
+    dict(key="holland1967", doi="10.1109/t-su.1967.29405"),
+    dict(key="uchino2001", doi="10.1109/58.896144"),
     dict(key="ieee176", doi="10.1109/IEEESTD.1988.79638"),
     # --- magnétostrictifs : modèles, hystérésis, pertes
     dict(key="engdahl2000", type="manual", text=(
@@ -51,23 +51,25 @@ WANTED = [
     dict(key="bertotti1998", type="manual", text=(
         "G. Bertotti, Hysteresis in Magnetism: for Physicists, Materials "
         "Scientists, and Engineers (Academic Press, San Diego, 1998).")),
-    dict(key="rayleigh1887", q="On the behaviour of iron and steel under the operation of feeble magnetic forces", au="Rayleigh"),
+    dict(key="rayleigh1887", doi="10.1080/14786448708628000"),
     dict(key="aubert2018", doi="10.1103/PhysRevApplied.9.044035"),
-    dict(key="squire1990", q="Phenomenological model for magnetization magnetostriction and Delta E effect in field annealed amorphous ribbons", au="Squire"),
+    dict(key="squire1990", doi="10.1016/0304-8853(90)90764-h"),
     # --- démagnétisation & shear lag
     dict(key="aharoni1998", doi="10.1063/1.367113"),
-    dict(key="chang2007", q="Modeling shear lag and demagnetization effects in magneto-electric laminate composites", au="Chang"),
+    dict(key="chang2007", doi="10.1103/physrevb.76.134116"),
     # --- non-linéarité ME
-    dict(key="burdin2014", q="Nonlinear magneto-electric effects in ferromagnetic piezoelectric composites", au="Burdin"),
-    dict(key="fetisov2018", q="Nonlinear magnetoelectric effects at high magnetic field amplitudes in composite multiferroics", au="Fetisov"),
+    dict(key="burdin2014", doi="10.1016/j.jmmm.2014.01.062"),
+    dict(key="fetisov2018", doi="10.1088/1361-6463/aab384"),
     # --- récupération d'énergie / applications
     dict(key="choi2022", doi="10.1039/D2SE00445C"),
-    dict(key="chu2019", q="Review of multi-layered magnetoelectric composite materials and devices applications", au="Chu"),
+    dict(key="chu2019", doi="10.1088/1361-6463/aac29b"),
     # --- circuits équivalents & amortissement en FEM ME
-    dict(key="dong2004circuit", q="Equivalent circuit method for static and dynamic analysis of magnetoelectric laminated composites", au="Dong"),
+    dict(key="dong2004circuit", doi="10.1007/s11434-008-0304-7"),
     dict(key="talleb2014", doi="10.1016/j.jallcom.2014.06.121"),
     dict(key="caughey1965", doi="10.1115/1.3627262"),
-    dict(key="dong2006metglas", q="Giant magnetoelectric effect in Metglas long-type PZT fiber laminates", au="Dong"),
+    dict(key="dong2006metglas", doi="10.1063/1.2337996"),
+    dict(key="rizzo2020these", doi="10.70675/66fce602z26b0z40c1z83d1z08d20353c521"),
+    dict(key="rizzo2019", doi="10.1109/ismict.2019.8743873"),
 ]
 
 

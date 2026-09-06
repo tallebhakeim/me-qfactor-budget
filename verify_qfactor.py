@@ -151,16 +151,54 @@ def main():
     #     dans le dépôt public.
     try:
         import run_fem2d_crosscheck as cc
-        hE, hQ, hP = cc.main()
+        hE, hQ, hP, hS, s_ep = cc.main()
         ok18 = abs(hE["alpha_r"] / hQ["alpha_r"] - 1) < 0.10 \
-            and abs(hP["alpha_r"] / 19.8 - 1) < 0.30
-        check("FEM 2D layer_eta : uniforme~Q global (10 %) ; "
-              "chaîne prédite à ±30 % de la mesure",
+            and abs(hP["alpha_r"] / 19.8 - 1) < 0.30 \
+            and abs(hS["f_r"] / 70.4e3 - 1) < 0.005
+        check("FEM 2D layer_eta : uniforme~Q global (10 %) ; chaîne prédite "
+              "à ±30 % ; raidissement époxy place f_r sur 70,4 kHz",
               ok18, f"uniforme/global = {hE['alpha_r']/hQ['alpha_r']:.2f}, "
-              f"alpha_res prédit = {hP['alpha_r']:.1f} vs 19,8")
+              f"alpha_res = {hP['alpha_r']:.1f} (brut) / {hS['alpha_r']:.1f} "
+              f"(s = {s_ep:.2f}) vs 19,8")
     except ImportError:
         print("[SKIP] test 18 (FEM 2D interne non disponible dans ce dépôt ; "
               "les 17 tests autonomes suffisent au budget)")
+
+    # 19-21. TRANSFERT DISQUE (thèse Rizzo, C2N) — nécessite scipy + le
+    #        modèle Terfenol du core : SKIP propre dans le dépôt public.
+    try:
+        import qfactor_disk as qdk
+        # 19. mode radial : disque PIC181 pur -> f·D = Np (datasheet)
+        qdk.SAMPLES["_pzt_pur"] = dict(D=16e-3, tp=1e-3, tms=[],
+                                       f_meas=qdk.PIC["Np"] / 16e-3)
+        md = qdk.radial_mode("_pzt_pur")
+        check("disque : PIC181 pur retrouve f·D = Np (tol 0,5 %)",
+              abs(md["f"] * 16e-3 / qdk.PIC["Np"] - 1) < 5e-3,
+              f"f·D = {md['f']*16e-3:.0f} vs Np = {qdk.PIC['Np']:.0f}")
+        del qdk.SAMPLES["_pzt_pur"]
+        # 20. f_s des 6 échantillons prédits à ±10 % (0 recalage)
+        errs = [qdk.radial_mode(s)["f"] / qdk.SAMPLES[s]["f_meas"] - 1
+                for s in qdk.SAMPLES]
+        check("disque : 6 f_s prédits à ±10 % (0 recalage)",
+              max(abs(e) for e in errs) < 0.10,
+              f"écarts {min(errs)*100:+.1f} % .. {max(errs)*100:+.1f} %")
+        # 21. hauts biais (chi_int <= 2) : les 12 Q prédits à un facteur < 3
+        #     de la mesure, et hiérarchie P-M-P > M-P respectée
+        ok21, worst = True, 1.0
+        for smp in qdk.SAMPLES:
+            for j, b in enumerate(qdk.BIAS_T[:2]):
+                qp = qdk.q_budget_disk(smp, b)["Q"]
+                ratio = qp / qdk.Q_MEAS[smp][j]
+                worst = max(worst, max(ratio, 1 / ratio))
+                ok21 &= (1 / 3 < ratio < 3)
+        qA = qdk.q_budget_disk("A (M-P, 16)", 0.1)["Q"]
+        qD = qdk.q_budget_disk("D (P-M-P, 16)", 0.1)["Q"]
+        check("disque : 12 Q linéaires à un facteur < 3 ; hiérarchie D > A",
+              ok21 and qD > qA,
+              f"pire facteur = {worst:.2f}, Q(D) = {qD:.0f} > Q(A) = {qA:.0f}")
+    except ImportError:
+        print("[SKIP] tests 19-21 (modèle disque : scipy/core non disponibles "
+              "dans ce dépôt)")
 
     n_ok = sum(ok for _, ok in TESTS)
     print(f"\n{n_ok}/{len(TESTS)} PASS")

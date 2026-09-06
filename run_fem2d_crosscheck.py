@@ -20,11 +20,20 @@ import numpy as np
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "core"))
 from me import me_fem as fe          # noqa: E402
 from me import me_deam as dm         # noqa: E402
+from me import me_materials as mm    # noqa: E402
 
 import qfactor_model as qm           # noqa: E402
 
 W, TP, TM, LP = 10e-3, 1e-3, 1e-3, 20e-3
 SIG_PRESTRESS = -23.8e6              # calibré sur H_opt=525 Oe (validate_malleron)
+_E0 = dict(pzt=mm.PIEZO["PZT-5H"]["E"], terf=mm.MAG["Terfenol-D"]["E"])
+
+
+def set_epoxy_stiffening(s):
+    """Raidissement époxy global : E de chaque couche x s (un seul facteur,
+    divulgué ; la thèse attribue le décalage de f_r à la résine)."""
+    mm.PIEZO["PZT-5H"]["E"] = _E0["pzt"] * s
+    mm.MAG["Terfenol-D"]["E"] = _E0["terf"] * s
 
 
 def layers():
@@ -70,7 +79,25 @@ def main():
     print(f"  alpha_res  = {hP['alpha_r']:.1f} vs {meas['a_res']} mesuré "
           f"({(hP['alpha_r']/meas['a_res']-1)*100:+.0f} %) "
           f"@ f_r {hP['f_r']/1e3:.1f} kHz (mes 70,4)")
-    return hE, hQ, hP
+
+    # ---- 3. même calcul avec le raidissement époxy divulgué (un facteur s
+    #         unique sur les modules, itéré pour placer f_r sur 70,4 kHz)
+    s = (meas["f_r"] / hP["f_r"]) ** 2
+    for _ in range(3):
+        set_epoxy_stiffening(s)
+        hS = fe.solve_harmonic_rect(LP, W, layers(), f, mode="LT",
+                                    H_oe=1.0, eddy=False, mag_coeffs=coeffs,
+                                    layer_eta=[eta_terf, eta_pzt])
+        s *= (meas["f_r"] / hS["f_r"]) ** 2
+    set_epoxy_stiffening(s)
+    hS = fe.solve_harmonic_rect(LP, W, layers(), f, mode="LT",
+                                H_oe=1.0, eddy=False, mag_coeffs=coeffs,
+                                layer_eta=[eta_terf, eta_pzt])
+    set_epoxy_stiffening(1.0)
+    print(f"  avec raidissement époxy s = {s:.3f} : alpha_res = "
+          f"{hS['alpha_r']:.1f} @ f_r {hS['f_r']/1e3:.1f} kHz "
+          f"({(hS['alpha_r']/meas['a_res']-1)*100:+.0f} % vs mesure)")
+    return hE, hQ, hP, hS, s
 
 
 if __name__ == "__main__":

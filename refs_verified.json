@@ -89,7 +89,7 @@
  {
   "key": "dong2003",
   "type": "crossref",
-  "via": "query",
+  "via": "doi",
   "authors": [
    "Shuxiang Dong",
    "Jie-Fang Li",
@@ -105,23 +105,7 @@
   "page": "1253-1261",
   "article_number": "",
   "year": 2003,
-  "doi": "10.1109/tuffc.2003.1244741",
-  "alternatives": [
-   {
-    "title": "Longitudinal and transverse magnetoelectric voltage coefficients of magnetostrictive/ piez",
-    "first": "Shuxiang Dong",
-    "cont": "IEEE Transactions on Ultrasonics, Ferroelectrics and Frequency Control",
-    "year": 2004,
-    "doi": "10.1109/tuffc.2004.1320738"
-   },
-   {
-    "title": "Push-pull mode magnetostrictive/piezoelectric laminate composite with an enhanced magnetoe",
-    "first": "Dong",
-    "cont": "Applied Physics Letters",
-    "year": 2005,
-    "doi": "10.1063/1.2007868"
-   }
-  ]
+  "doi": "10.1109/tuffc.2003.1244741"
  },
  {
   "key": "zhai2008",
@@ -149,7 +133,7 @@
  {
   "key": "dong2003resonant",
   "type": "crossref",
-  "via": "query",
+  "via": "doi",
   "authors": [
    "Shuxiang Dong",
    "Jinrong Cheng",
@@ -166,23 +150,7 @@
   "page": "4812-4814",
   "article_number": "",
   "year": 2003,
-  "doi": "10.1063/1.1631756",
-  "alternatives": [
-   {
-    "title": "Resonant bending mode of Terfenol-D∕steel∕Pb(Zr,Ti)O3 magnetoelectric laminate composites",
-    "first": "Xing",
-    "cont": "Applied Physics Letters",
-    "year": 2006,
-    "doi": "10.1063/1.2353819"
-   },
-   {
-    "title": "Magnetoelectric effect in Terfenol-D∕Pb(Zr,TiO)3∕μ-metal laminate composites",
-    "first": "Dong",
-    "cont": "Applied Physics Letters",
-    "year": 2006,
-    "doi": "10.1063/1.2355459"
-   }
-  ]
+  "doi": "10.1063/1.1631756"
  },
  {
   "key": "kopyl2021",
@@ -210,7 +178,7 @@
  {
   "key": "malleron2019",
   "type": "crossref",
-  "via": "query",
+  "via": "doi",
   "authors": [
    "Kevin Malleron",
    "Aurelie Gensbittel",
@@ -227,23 +195,7 @@
   "page": "184-189",
   "article_number": "",
   "year": 2019,
-  "doi": "10.1016/j.mejo.2018.01.013",
-  "alternatives": [
-   {
-    "title": "Finite element modeling of magnetoelectric energy transducers with interdigitated electrod",
-    "first": "Malleron",
-    "cont": "2016 IEEE Conference on Electromagnetic Field Computation (CEFC)",
-    "year": 2016,
-    "doi": "10.1109/cefc.2016.7816000"
-   },
-   {
-    "title": "Finite-Element Modeling of Magnetoelectric Energy Transducers With Interdigitated Electrod",
-    "first": "Malleron",
-    "cont": "IEEE Transactions on Magnetics",
-    "year": 2017,
-    "doi": "10.1109/tmag.2017.2666424"
-   }
-  ]
+  "doi": "10.1016/j.mejo.2018.01.013"
  },
  {
   "key": "malleron2018these",
@@ -275,7 +227,7 @@
  {
   "key": "talleb2015",
   "type": "crossref",
-  "via": "query",
+  "via": "doi",
   "authors": [
    "Hakeim Talleb",
    "Zhuoxiang Ren"
@@ -290,28 +242,12 @@
   "page": "1-5",
   "article_number": "",
   "year": 2015,
-  "doi": "10.1109/tmag.2014.2357492",
-  "alternatives": [
-   {
-    "title": "Finite element modeling of magnetoelectric laminate composites in considering nonlinear an",
-    "first": "Talleb",
-    "cont": "Journal of Alloys and Compounds",
-    "year": 2014,
-    "doi": "10.1016/j.jallcom.2014.06.121"
-   },
-   {
-    "title": "Multiphysics Modeling of Magnetoelectric Composite Disks by a 2d Axisymmetric Finite Eleme",
-    "first": "Talleb",
-    "cont": "",
-    "year": 2023,
-    "doi": "10.2139/ssrn.4650040"
-   }
-  ]
+  "doi": "10.1109/tmag.2014.2357492"
  },
  {
   "key": "talleb2022",
   "type": "crossref",
-  "via": "query",
+  "via": "doi",
   "authors": [
    "Hakeim Talleb",
    "Zhuoxiang Ren"
@@ -326,28 +262,12 @@
   "page": "116260",
   "article_number": "116260",
   "year": 2023,
-  "doi": "10.1016/j.compstruct.2022.116260",
-  "alternatives": [
-   {
-    "title": "Finite element modeling of magnetoelectric laminate composites in considering nonlinear an",
-    "first": "Talleb",
-    "cont": "Journal of Alloys and Compounds",
-    "year": 2014,
-    "doi": "10.1016/j.jallcom.2014.06.121"
-   },
-   {
-    "title": "Finite-Element Modeling of a Magnetoelectric Energy Transducer Including the Load Effect",
-    "first": "Talleb",
-    "cont": "IEEE Transactions on Magnetics",
-    "year": 2015,
-    "doi": "10.1109/tmag.2014.2357492"
-   }
-  ]
+  "doi": "10.1016/j.compstruct.2022.116260"
  },
  {
   "key": "holland1967",
   "type": "crossref",
-  "via": "query",
+  "via": "doi",
   "authors": [
    "R. Holland"
   ],
@@ -361,28 +281,12 @@
   "page": "18-20",
   "article_number": "",
   "year": 1967,
-  "doi": "10.1109/t-su.1967.29405",
-  "alternatives": [
-   {
-    "title": "INTERNAL ENERGY LOSSES IN A CESIUM THERMIONIC CONVERTER",
-    "first": "Holland",
-    "cont": "",
-    "year": 1964,
-    "doi": "10.2172/4658522"
-   },
-   {
-    "title": "The Euro‐election and minority winners",
-    "first": "Holland",
-    "cont": "Representation",
-    "year": 1980,
-    "doi": "10.1080/00344898008459291"
-   }
-  ]
+  "doi": "10.1109/t-su.1967.29405"
  },
  {
   "key": "uchino2001",
   "type": "crossref",
-  "via": "query",
+  "via": "doi",
   "authors": [
    "K. Uchino",
    "S. Hirose"
@@ -397,23 +301,7 @@
   "page": "307-321",
   "article_number": "",
   "year": 2001,
-  "doi": "10.1109/58.896144",
-  "alternatives": [
-   {
-    "title": "Fundamentals of Losses",
-    "first": "Uchino",
-    "cont": "High-Power Piezoelectrics and Loss Mechanisms",
-    "year": 2020,
-    "doi": "10.1201/9781003087519-3"
-   },
-   {
-    "title": "Equivalent Circuits with Piezo Losses",
-    "first": "Uchino",
-    "cont": "High-Power Piezoelectrics and Loss Mechanisms",
-    "year": 2020,
-    "doi": "10.1201/9781003087519-5"
-   }
-  ]
+  "doi": "10.1109/58.896144"
  },
  {
   "key": "ieee176",
@@ -524,7 +412,7 @@
  {
   "key": "rayleigh1887",
   "type": "crossref",
-  "via": "query",
+  "via": "doi",
   "authors": [
    "Lord Rayleigh"
   ],
@@ -538,23 +426,7 @@
   "page": "225-245",
   "article_number": "",
   "year": 1887,
-  "doi": "10.1080/14786448708628000",
-  "alternatives": [
-   {
-    "title": "Liquid Air at One Operation",
-    "first": "RAYLEIGH",
-    "cont": "Nature",
-    "year": 1898,
-    "doi": "10.1038/058199a0"
-   },
-   {
-    "title": "On the Magnetic Rotation of Light and the Second Law of Thermo-Dynamics",
-    "first": "RAYLEIGH",
-    "cont": "Nature",
-    "year": 1901,
-    "doi": "10.1038/064577e0"
-   }
-  ]
+  "doi": "10.1080/14786448708628000"
  },
  {
   "key": "aubert2018",
@@ -582,7 +454,7 @@
  {
   "key": "squire1990",
   "type": "crossref",
-  "via": "query",
+  "via": "doi",
   "authors": [
    "P.T. Squire"
   ],
@@ -596,23 +468,7 @@
   "page": "299-310",
   "article_number": "",
   "year": 1990,
-  "doi": "10.1016/0304-8853(90)90764-h",
-  "alternatives": [
-   {
-    "title": "Engineering magnetostriction measurements of annealed FeSiB amorphous wires",
-    "first": "Atkinson",
-    "cont": "IEEE Transactions on Magnetics",
-    "year": 1994,
-    "doi": "10.1109/20.334220"
-   },
-   {
-    "title": "Delta E effect in obliquely field annealed METGLAS R2605SC",
-    "first": "Squire",
-    "cont": "IEEE Transactions on Magnetics",
-    "year": 1989,
-    "doi": "10.1109/20.42611"
-   }
-  ]
+  "doi": "10.1016/0304-8853(90)90764-h"
  },
  {
   "key": "aharoni1998",
@@ -636,7 +492,7 @@
  {
   "key": "chang2007",
   "type": "crossref",
-  "via": "query",
+  "via": "doi",
   "authors": [
    "Chia-Ming Chang",
    "Gregory P. Carman"
@@ -651,28 +507,12 @@
   "page": "",
   "article_number": "134116",
   "year": 2007,
-  "doi": "10.1103/physrevb.76.134116",
-  "alternatives": [
-   {
-    "title": "Experimental evidence of end effects in magneto-electric laminate composites",
-    "first": "Chang",
-    "cont": "Journal of Applied Physics",
-    "year": 2007,
-    "doi": "10.1063/1.2822455"
-   },
-   {
-    "title": "Evaluating in‐plane shear properties of bamboo textile‐reinforced polymer using the Iosipe",
-    "first": "Chang",
-    "cont": "Polymer Composites",
-    "year": 2025,
-    "doi": "10.1002/pc.29643"
-   }
-  ]
+  "doi": "10.1103/physrevb.76.134116"
  },
  {
   "key": "burdin2014",
   "type": "crossref",
-  "via": "query",
+  "via": "doi",
   "authors": [
    "D.A. Burdin",
    "D.V. Chashin",
@@ -692,28 +532,12 @@
   "page": "98-104",
   "article_number": "",
   "year": 2014,
-  "doi": "10.1016/j.jmmm.2014.01.062",
-  "alternatives": [
-   {
-    "title": "Nonlinear magnetoelectric effects in a composite ferromagnetic-piezoelectric structure und",
-    "first": "Burdin",
-    "cont": "Journal of Magnetism and Magnetic Materials",
-    "year": 2018,
-    "doi": "10.1016/j.jmmm.2017.10.096"
-   },
-   {
-    "title": "Nonlinear converse magnetoelectric effects in a ferromagnetic-piezoelectric bilayer",
-    "first": "Fetisov",
-    "cont": "Applied Physics Letters",
-    "year": 2018,
-    "doi": "10.1063/1.5054584"
-   }
-  ]
+  "doi": "10.1016/j.jmmm.2014.01.062"
  },
  {
   "key": "fetisov2018",
   "type": "crossref",
-  "via": "query",
+  "via": "doi",
   "authors": [
    "L Y Fetisov",
    "D A Burdin",
@@ -733,23 +557,7 @@
   "page": "154003",
   "article_number": "",
   "year": 2018,
-  "doi": "10.1088/1361-6463/aab384",
-  "alternatives": [
-   {
-    "title": "Nonlinear magnetoelectric effects in flexible composite ferromagnetic – Piezopolymer struc",
-    "first": "Fetisov",
-    "cont": "Journal of Magnetism and Magnetic Materials",
-    "year": 2017,
-    "doi": "10.1016/j.jmmm.2017.06.013"
-   },
-   {
-    "title": "Magnetic field spectrum analyzer using nonlinear magnetoelectric effect in composite ferro",
-    "first": "Fedulov",
-    "cont": "Sensors and Actuators A: Physical",
-    "year": 2022,
-    "doi": "10.1016/j.sna.2022.113844"
-   }
-  ]
+  "doi": "10.1088/1361-6463/aab384"
  },
  {
   "key": "choi2022",
@@ -778,7 +586,7 @@
  {
   "key": "chu2019",
   "type": "crossref",
-  "via": "query",
+  "via": "doi",
   "authors": [
    "Zhaoqiang Chu",
    "MohammadJavad PourhosseiniAsl",
@@ -794,28 +602,12 @@
   "page": "243001",
   "article_number": "",
   "year": 2018,
-  "doi": "10.1088/1361-6463/aac29b",
-  "alternatives": [
-   {
-    "title": "Bandgap engineering in 2D layered materials",
-    "first": "Chu",
-    "cont": "2015 IEEE International Electron Devices Meeting (IEDM)",
-    "year": 2015,
-    "doi": "10.1109/iedm.2015.7409782"
-   },
-   {
-    "title": "Electrically tunable bandgaps in 2D layered materials",
-    "first": "Chu",
-    "cont": "2016 IEEE International Conference on Electron Devices and Solid-State Circuits (EDSSC)",
-    "year": 2016,
-    "doi": "10.1109/edssc.2016.7785202"
-   }
-  ]
+  "doi": "10.1088/1361-6463/aac29b"
  },
  {
   "key": "dong2004circuit",
   "type": "crossref",
-  "via": "query",
+  "via": "doi",
   "authors": [
    "ShuXiang Dong",
    "JunYi Zhai"
@@ -830,23 +622,7 @@
   "page": "2113-2123",
   "article_number": "",
   "year": 2008,
-  "doi": "10.1007/s11434-008-0304-7",
-  "alternatives": [
-   {
-    "title": "Performance analysis of acoustically actuated magnetoelectric antennas via equivalent circ",
-    "first": "Du",
-    "cont": "Journal of Applied Physics",
-    "year": 2024,
-    "doi": "10.1063/5.0192222"
-   },
-   {
-    "title": "An equivalent circuit for magnetoelectric composites operating in a longitudinal mode reso",
-    "first": "Dong",
-    "cont": "Physica Scripta",
-    "year": 2023,
-    "doi": "10.1088/1402-4896/acce82"
-   }
-  ]
+  "doi": "10.1007/s11434-008-0304-7"
  },
  {
   "key": "talleb2014",
@@ -891,7 +667,7 @@
  {
   "key": "dong2006metglas",
   "type": "crossref",
-  "via": "query",
+  "via": "doi",
   "authors": [
    "Junyi Zhai",
    "Shuxiang Dong",
@@ -909,22 +685,48 @@
   "page": "",
   "article_number": "083507",
   "year": 2006,
-  "doi": "10.1063/1.2337996",
-  "alternatives": [
-   {
-    "title": "Enhanced Giant Magnetoelectric Effect in Laminate Composites of FeCuNbSiB/FeNi/PZT",
-    "first": "Wen",
-    "cont": "Journal of Magnetics",
-    "year": 2011,
-    "doi": "10.4283/jmag.2011.16.4.398"
-   },
-   {
-    "title": "Giant magnetodielectric effect in Terfenol-D/PZT magnetoelectric laminate composite",
-    "first": "Yao",
-    "cont": "Journal of Applied Physics",
-    "year": 2011,
-    "doi": "10.1063/1.3603042"
-   }
-  ]
+  "doi": "10.1063/1.2337996"
+ },
+ {
+  "key": "rizzo2020these",
+  "type": "crossref",
+  "via": "doi",
+  "authors": [
+   "Giulia Rizzo"
+  ],
+  "title": "Study of a MagnetoElectric Transducer to Wireless Power Medical Implants",
+  "container": "",
+  "short_container": [
+   ""
+  ],
+  "volume": "",
+  "issue": "",
+  "page": "",
+  "article_number": "",
+  "year": null,
+  "doi": "10.70675/66fce602z26b0z40c1z83d1z08d20353c521"
+ },
+ {
+  "key": "rizzo2019",
+  "type": "crossref",
+  "via": "doi",
+  "authors": [
+   "Giulia Rizzo",
+   "Vincent Loyau",
+   "Ronald Nocua",
+   "Jean Christophe Lourme",
+   "Elie Lefeuvre"
+  ],
+  "title": "Potentiality of magnetoelectric composites for Wireless Power Transmission in medical implants",
+  "container": "2019 13th International Symposium on Medical Information and Communication Technology (ISMICT)",
+  "short_container": [
+   ""
+  ],
+  "volume": "",
+  "issue": "",
+  "page": "1-4",
+  "article_number": "",
+  "year": 2019,
+  "doi": "10.1109/ismict.2019.8743873"
  }
 ]
