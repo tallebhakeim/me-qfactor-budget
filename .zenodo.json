@@ -1,0 +1,22 @@
+{
+ "title": "me-qfactor-budget: per-channel energy-loss budget predicting the quality factor of magnetoelectric laminate composites",
+ "description": "Companion code for the manuscript 'A per-channel energy-loss budget predicts the quality factor of magnetoelectric laminate composites without structural fitting' (submitted to Smart Materials and Structures, 2026). Self-contained Python scripts (numpy, matplotlib): five-channel loss budget with exactly computed demagnetizing flux factor, stress-driven Rayleigh hysteresis with self-consistent amplitude-dependent Q, interval brackets, inverse bounds, and an automated verification suite.",
+ "creators": [
+  {
+   "name": "Talleb, Hakeim",
+   "affiliation": "Sorbonne Université, Université Paris-Saclay, CNRS, CentraleSupélec, GeePs, Gif-sur-Yvette, France",
+   "orcid": "0000-0002-2734-6242"
+  }
+ ],
+ "license": "MIT",
+ "upload_type": "software",
+ "keywords": [
+  "magnetoelectric composite",
+  "quality factor",
+  "damping",
+  "eddy currents",
+  "Rayleigh hysteresis",
+  "Terfenol-D",
+  "energy harvesting"
+ ]
+}
