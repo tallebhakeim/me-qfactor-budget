@@ -133,12 +133,12 @@ def main():
     fig.tight_layout(); fig.savefig("fig_en_samples.png", dpi=DPI)
     plt.close(fig)
 
-    # ---- Fig 4 : Q(H_ac)
+    # ---- Fig 4 : (a) Q(H_ac), (b) charge R -> f_r et Q
     Hacs = np.array([0.3, 0.7, 1.0, 2.0, 3.0, 4.5, 6.5, 10.0])
     q_nom = [qm.q_budget(qm.REF, "nom", NX, h)["Q"] for h in Hacs]
     q_min = [qm.q_budget(qm.REF, "max_loss", NX, h)["Q"] for h in Hacs]
     q_max = [qm.q_budget(qm.REF, "min_loss", NX, h)["Q"] for h in Hacs]
-    fig, ax = plt.subplots(figsize=(5.6, 3.3))
+    fig, (ax, axb) = plt.subplots(1, 2, figsize=(9.8, 3.4))
     ax.fill_between(Hacs, q_min, q_max, color=BLUE, alpha=0.25,
                     label="material-interval envelope")
     ax.plot(Hacs, q_nom, "o-", color=BLUE, label="nominal (self-consistent)")
@@ -147,10 +147,32 @@ def main():
     ax.set_xlabel("drive amplitude $h_{ac}$ [Oe]")
     ax.set_ylabel("self-consistent Q")
     ax.set_ylim(bottom=0); ax.legend(fontsize=8)
+    ax.set_title("(a) drive amplitude", fontsize=9.5)
+
+    Rs = np.logspace(1, 6, 21)
+    sw = qm.load_sweep(Rs, nx=NX)
+    frs = np.array([o["f_r"] for o in sw]) / 1e3
+    qls = np.array([o["Q"] for o in sw])
+    asm0 = qm.assemble(qm.REF, NX, stiffen=False)
+    Ropt = 1 / (2 * np.pi * 70.3e3 * asm0["C0"])
+    axb.semilogx(Rs, frs, "o-", color=BLUE, ms=4)
+    axb.set_xlabel("load resistance R [Ω]")
+    axb.set_ylabel("resonance $f_r$ [kHz]", color=BLUE)
+    axb.tick_params(axis="y", labelcolor=BLUE)
+    axb2 = axb.twinx()
+    axb2.semilogx(Rs, qls, "s--", color=RED, ms=4)
+    axb2.set_ylabel("loaded Q", color=RED)
+    axb2.tick_params(axis="y", labelcolor=RED)
+    axb2.set_ylim(0, 20)
+    axb.axvline(Ropt, color=GREY, ls=":", lw=1.2)
+    axb.text(Ropt * 1.3, 67.4, "R = 1/(ω C$_0$)\n= %d Ω" % round(Ropt),
+             fontsize=7.5, color=GREY)
+    axb.set_title("(b) electrical load ($f_s \\rightarrow f_p$, Q dip)",
+                  fontsize=9.5)
     fig.tight_layout(); fig.savefig("fig_en_qhac.png", dpi=DPI)
     plt.close(fig)
     np.savez("fig_qhac_data.npz", Hacs=Hacs, q_nom=q_nom, q_min=q_min,
-             q_max=q_max)
+             q_max=q_max, Rs=Rs, frs=frs, qls=qls)
 
     # ---- Fig 5 : eddy physics in the slab
     terf = qm.MAGS["Terfenol-D@bias"]

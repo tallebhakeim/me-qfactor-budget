@@ -153,13 +153,14 @@ def assemble(sample=REF, nx=200, eta_p=0.0, eta_mag=0.0, stiffen=True,
         if in1[e]:
             F[i] -= sig_star; F[j] += sig_star
 
+    kap = (PZT["E"] * PZT["d31"])**2 * tp * w / (epsS() * Lp)
     if stiffen:
         # rang-1 circuit ouvert : énergie epsS'.E3^2.Vp = kap.(u_L-u_0)^2,
         # ressort SANS perte (électrode équipotentielle, charge totale nulle)
-        kap = (PZT["E"] * PZT["d31"])**2 * tp * w / (epsS() * Lp)
         K[0, 0] += kap; K[-1, -1] += kap; K[0, -1] -= kap; K[-1, 0] -= kap
+    C0 = epsS() * w * Lp / tp                     # capacité bloquée
     return dict(K=K, M=M, F=F, x=x, h=h, in1=in1, nx=nx, mags=mags,
-                sample=sample, geo=geo)
+                sample=sample, geo=geo, kap=kap, C0=C0, stiffen=stiffen)
 
 
 def solve_harm(asm, f, H_oe=1.0):
@@ -335,6 +336,72 @@ def q_bracket(sample=REF, nx=200, H_ac_oe=1.0):
     """[Q_min, Q_max] par coins d'intervalles matériaux, à amplitude donnée."""
     return (q_budget(sample, "max_loss", nx, H_ac_oe),
             q_budget(sample, "min_loss", nx, H_ac_oe))
+
+
+# ===================== canal 6 : CHARGE électrique R aux bornes du piézo
+def solve_harm_R(asm, f, R, H_oe=1.0):
+    """Réponse harmonique AVEC charge résistive R : la condition électrique
+    V = R.I remplace le circuit ouvert. Le rang-1 devient complexe,
+    kap_eff = kap.g(w) avec g = jwRC0/(1+jwRC0) : g->0 (court-circuit, f_s),
+    g->1 (circuit ouvert, f_p) ; Im(g).kap = amortissement PAR LA CHARGE.
+    Nécessite un assemblage stiffen=False. Renvoie aussi P_charge = |V|²/2R."""
+    assert not asm["stiffen"], "utiliser assemble(..., stiffen=False)"
+    geo = asm["geo"]
+    w0 = 2 * np.pi * f
+    g = 1j * w0 * R * asm["C0"] / (1 + 1j * w0 * R * asm["C0"])
+    K = asm["K"].copy()
+    ke = asm["kap"] * g
+    K[0, 0] += ke; K[-1, -1] += ke; K[0, -1] -= ke; K[-1, 0] -= ke
+    H = H_oe * OE
+    u = np.linalg.solve(K - w0**2 * asm["M"], asm["F"] * H)
+    S = np.diff(u) / asm["h"]
+    S_moy = np.sum(S.real * asm["h"]) / geo["Lp"] + \
+        1j * np.sum(S.imag * asm["h"]) / geo["Lp"]
+    E3 = -PZT["d31"] * PZT["E"] * S_moy / epsS() * g
+    V = E3 * geo["tp"]
+    t_tot = geo["tp"] + sum(t for m, t in asm["mags"])
+    alpha = abs(V) / (t_tot * 100 * H_oe)
+    dVp = geo["tp"] * geo["w"] * asm["h"]
+    Wp = float(np.sum(PZT["E"] * np.abs(S)**2 * dVp))
+    Wm = [float(np.sum(m["E"] * np.abs(S - m["d33m"] * H)**2
+                       * np.where(asm["in1"], t * geo["w"] * asm["h"], 0.0)))
+          for m, t in asm["mags"]]
+    P_load = abs(V)**2 / (2 * R)
+    return dict(u=u, S=S, alpha=alpha, V=V, P_load=P_load,
+                Wp=Wp, Wm=Wm, Wtot=Wp + sum(Wm), f=f, g=g)
+
+
+def load_sweep(Rs, nx=200, eta_p=0.0181, eta_m=0.1732, sample=REF):
+    """f_r(R) et Q_chargé(R) : matériaux amortis aux eta PAR COUCHE du budget
+    nominal, charge R balayée. Q par largeur -3 dB du pic de |alpha|."""
+    asm = assemble(sample, nx, eta_p=eta_p, eta_mag=eta_m, stiffen=False)
+    out = []
+    for R in Rs:
+        fr, _ = max(((f, solve_harm_R(asm, f, R)["alpha"])
+                     for f in np.linspace(60e3, 80e3, 240)),
+                    key=lambda t: t[1]), None
+        f0 = fr[0]
+        fs = np.linspace(0.90 * f0, 1.10 * f0, 1200)
+        a = np.array([solve_harm_R(asm, f, R)["alpha"] for f in fs])
+        i = int(np.argmax(a))
+        half = a[i] / np.sqrt(2)
+        lo = np.where(a[:i] < half)[0]
+        hi = np.where(a[i:] < half)[0]
+        if len(lo) and len(hi):
+            Q = fs[i] / (fs[i + hi[0]] - fs[lo[-1]])
+        else:
+            Q = np.nan
+        r = solve_harm_R(asm, fs[i], R)
+        w0 = 2 * np.pi * fs[i]
+        # canal charge au sens du budget : P_charge/(w.U) avec U = Wtot/2 + We
+        We = epsS() * abs(-PZT["d31"] * PZT["E"]
+                          * (np.sum(r["S"].real * asm["h"]) / GEO["Lp"]
+                             + 1j * np.sum(r["S"].imag * asm["h"]) / GEO["Lp"])
+                          / epsS() * r["g"])**2 * GEO["tp"] * GEO["w"] * GEO["Lp"]
+        U = 0.5 * (r["Wtot"] + We)
+        out.append(dict(R=R, f_r=fs[i], Q=Q,
+                        invQ_load=r["P_load"] / (w0 * U)))
+    return out
 
 
 # ====================================== lien alpha_res/alpha_stat <-> Q_eff

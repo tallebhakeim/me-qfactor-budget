@@ -200,6 +200,24 @@ def main():
         print("[SKIP] tests 19-21 (modèle disque : scipy/core non disponibles "
               "dans ce dépôt)")
 
+    # 23. canal CHARGE : R->0 donne f_s (non raidi), R->inf donne f_p
+    #     (raidi) ; le creux de Q chargé est près de R = 1/(w C0) et
+    #     l'identité budget 1/Q_chargé = 1/Q_ouvert + 1/Q_charge tient à 10 %
+    asm_ns = qm.assemble(qm.REF, NX, stiffen=False)
+    Ropt = 1.0 / (2 * np.pi * fr * asm_ns["C0"])
+    sw = qm.load_sweep([1.0, Ropt, 1e7], nx=NX)
+    f_s_ref, _ = qm.find_resonance(qm.assemble(qm.REF, NX, eta_p=0.0181,
+                                               eta_mag=0.1732, stiffen=False))
+    ok23 = abs(sw[0]["f_r"] / f_s_ref - 1) < 0.005 \
+        and abs(sw[2]["f_r"] / fr - 1) < 0.005
+    invQ_open = 1.0 / sw[2]["Q"]
+    ident = (invQ_open + sw[1]["invQ_load"]) * sw[1]["Q"]
+    ok23 &= abs(ident - 1) < 0.10 and sw[1]["Q"] < sw[2]["Q"]
+    check("charge : f_s/f_p retrouvés ; identité budget au creux (10 %)",
+          ok23, f"f_r(0) = {sw[0]['f_r']/1e3:.1f} kHz, f_r(inf) = "
+          f"{sw[2]['f_r']/1e3:.1f}, Q({Ropt:.0f} Ω) = {sw[1]['Q']:.1f}, "
+          f"identité = {ident:.2f}")
+
     # 22. courbe de résonance MESURÉE (digitalisée) : Q de bande passante
     #     -3 dB dans l'encadrement a priori et à ±30 % du nominal
     mc = np.load("malleron_measured_curve.npz")

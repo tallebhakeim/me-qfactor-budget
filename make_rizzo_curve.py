@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Provenance de rizzo_measured_curve.npz : enveloppe supérieure de la
+Provenance de rizzo_measured_curve.npz : courbe supérieure (500 kOhm) de la
 figure 2.19 de la thèse G. Rizzo (V_RMS(f) de l'échantillon C, tricouche
 M-P-M Ø16, biais 0,1 T, drive 0,8 mT, 20 charges de 10 Ω à 500 kΩ).
 Au voisinage du pic principal, l'enveloppe est la courbe 500 kΩ (la plus
@@ -47,10 +47,13 @@ def main():
     top, bot = rows.min(), rows.max()
     left, right = cols.min(), cols.max()
 
-    # pixels colorés (courbes) : saturation nette, hors gris/noir
+    # pixels de courbe : teinte même pâle (le cyan 500 kOhm est à 47 du
+    # blanc), en excluant fond blanc et cadre sombre. Le pixel le plus HAUT
+    # par colonne = la courbe 500 kOhm (V croît avec la charge à f donnée).
     mx = rgb.max(axis=2)
     mn = rgb.min(axis=2)
-    colored = (mx - mn > 40) & (mx > 60)
+    s = rgb.sum(axis=2)
+    colored = (mx - mn > 15) & (s < 735) & (s > 150)
     env_f, env_v = [], []
     for c in range(left + 2, right - 1):
         ys = np.where(colored[top + 2:bot - 1, c])[0]

@@ -105,7 +105,7 @@ uniquement dans ce régime.""")
         a3.plot(fl, vpk / np.sqrt(1 + (2 * Qv * (fl - fpk) / fpk)**2),
                 "-" if col == BLUE else "--", color=col, label=lab)
     a3.plot(fmc, vmc, ".", color=RED, ms=2.5, alpha=0.6,
-            label="measured envelope over loads (0.8 mT)")
+            label="measured 500 kΩ curve (0.8 mT drive)")
     a3.set_xlim(133, 157); a3.set_ylim(0, 40)
     a3.set_xlabel("frequency [kHz]"); a3.set_ylabel("V$_{RMS}$ [V]")
     a3.set_title("(d) sample C at 0.1 T: measured resonance", fontsize=9)
