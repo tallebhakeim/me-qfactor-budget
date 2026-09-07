@@ -100,15 +100,16 @@ uniquement dans ce régime.""")
     ipk = int(np.argmax(vmc))
     fpk, vpk = fmc[ipk], vmc[ipk]
     fl = np.linspace(135, 155, 500)
-    for Qv, col, lab in ((173, GREY, "Lorentzian, identified Q = 173"),
-                         (276, BLUE, "Lorentzian, predicted Q = 276")):
-        a3.plot(fl, vpk / np.sqrt(1 + (2 * Qv * (fl - fpk) / fpk)**2),
-                "-" if col == BLUE else "--", color=col, label=lab)
+    a3.plot(fl, vpk / np.sqrt(1 + (2 * 173 * (fl - fpk) / fpk)**2),
+            "--", color=GREY,
+            label="single-mode shape at identified Q = 173\n"
+                  "(0.8 kHz wide: 4 px in the source figure)")
     a3.plot(fmc, vmc, ".", color=RED, ms=2.5, alpha=0.6,
             label="measured 500 kΩ curve (0.8 mT drive)")
     a3.set_xlim(133, 157); a3.set_ylim(0, 40)
     a3.set_xlabel("frequency [kHz]"); a3.set_ylabel("V$_{RMS}$ [V]")
-    a3.set_title("(d) sample C at 0.1 T: measured resonance", fontsize=9)
+    a3.set_title("(d) sample C at 0.1 T: peak amplitude and position",
+                 fontsize=9)
     a3.legend(fontsize=6.5, loc="upper right")
 
     fig.tight_layout()
