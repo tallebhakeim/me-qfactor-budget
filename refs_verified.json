@@ -728,5 +728,50 @@
   "article_number": "",
   "year": 2019,
   "doi": "10.1109/ismict.2019.8743873"
+ },
+ {
+  "key": "imboden2014",
+  "type": "crossref",
+  "via": "doi",
+  "authors": [
+   "Matthias Imboden",
+   "Pritiraj Mohanty"
+  ],
+  "title": "Dissipation in nanoelectromechanical systems",
+  "container": "Physics Reports",
+  "short_container": [
+   "Physics Reports"
+  ],
+  "volume": "534",
+  "issue": "3",
+  "page": "89-146",
+  "article_number": "",
+  "year": 2014,
+  "doi": "10.1016/j.physrep.2013.09.003"
+ },
+ {
+  "key": "yasumura2000",
+  "type": "crossref",
+  "via": "doi",
+  "authors": [
+   "K.Y. Yasumura",
+   "T.D. Stowe",
+   "E.M. Chow",
+   "T. Pfafman",
+   "T.W. Kenny",
+   "B.C. Stipe",
+   "D. Rugar"
+  ],
+  "title": "Quality factors in micron- and submicron-thick cantilevers",
+  "container": "Journal of Microelectromechanical Systems",
+  "short_container": [
+   "J. Microelectromech. Syst."
+  ],
+  "volume": "9",
+  "issue": "1",
+  "page": "117-125",
+  "article_number": "",
+  "year": 2000,
+  "doi": "10.1109/84.825786"
  }
 ]

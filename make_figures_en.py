@@ -25,8 +25,12 @@ NOMS = dict(pzt_meca="PZT mechanical (Q$_m$)",
 
 
 def fig_schematic():
-    fig, (a1, a2) = plt.subplots(1, 2, figsize=(9.6, 3.1),
-                                 gridspec_kw=dict(width_ratios=[1.15, 1]))
+    fig = plt.figure(figsize=(9.6, 6.4))
+    gs = fig.add_gridspec(2, 2, height_ratios=[1.0, 0.95],
+                          width_ratios=[1.15, 1])
+    a1 = fig.add_subplot(gs[0, 0])
+    a2 = fig.add_subplot(gs[0, 1])
+    a3 = fig.add_subplot(gs[1, :])
     # ---- (a) sample stack
     a1.add_patch(Rectangle((0, 0), 20, 1, fc="#f0c674", ec="k", lw=0.8))
     a1.add_patch(Rectangle((0, 1), 14, 1, fc="#9fb4cc", ec="k", lw=0.8))
@@ -74,6 +78,60 @@ def fig_schematic():
             color=RED, ha="center", fontsize=8)
     a2.set_xlim(-0.6, 10.9); a2.set_ylim(-0.5, 3.8)
     a2.axis("off"); a2.set_title("(b) loss channels", fontsize=9.5)
+
+    # ---- (c) stratégie : matériaux -> structure -> canaux -> Q -> mesures
+    def box(x, y, w, h, lines, fc="#eef2f7", fs=7.3, title=None):
+        a3.add_patch(Rectangle((x, y), w, h, fc=fc, ec="#43516b", lw=0.9))
+        txt = "\n".join(lines)
+        a3.text(x + w / 2, y + h / 2, txt, ha="center", va="center",
+                fontsize=fs)
+        if title:
+            a3.text(x + w / 2, y + h + 0.35, title, ha="center",
+                    fontsize=7.8, style="italic", color="#43516b")
+    def arrow(x0, x1, y=5.0):
+        a3.add_patch(FancyArrowPatch((x0, y), (x1, y), arrowstyle="-|>",
+                                     mutation_scale=13, color="#43516b"))
+    # colonne 1 : données matériaux (une fois par matériau)
+    box(0.5, 6.6, 17.5, 2.6, ["PZT datasheet:",
+                              "Q$_m$, tan$\\,\\delta_\\varepsilon$"],
+        title="material data, once per material")
+    box(0.5, 3.6, 17.5, 2.6, ["Terfenol-D at bias:",
+                              "$\\sigma$, $\\chi$(H), d$_{33,m}$(H),",
+                              "Rayleigh (c$_{rev}$, $\\eta_\\infty$, H$_{a0}$)"])
+    box(0.5, 0.6, 17.5, 2.6, ["epoxy bond:",
+                              "G$_g$, t$_g$, tan$\\,\\delta_g$"])
+    arrow(18.3, 21.2)
+    # colonne 2 : structure (géométrie seule)
+    box(21.5, 2.6, 18.5, 4.8, ["structural mode",
+                               "(bar / disk, geometry only):",
+                               "energy fractions W$_i$, stress T(x),",
+                               "demagnetization N $\\rightarrow$ $\\lambda$"],
+        title="structure")
+    arrow(40.3, 43.2)
+    # colonne 3 : canaux
+    box(43.5, 1.6, 21.0, 6.8, ["loss channels 1/Q$_i$:",
+                               "PZT mechanical $\\cdot$ dielectric",
+                               "eddy currents (computed $\\lambda$)",
+                               "Rayleigh hysteresis (amplitude)",
+                               "bond shear lag $\\cdot$ electrical load"],
+        title="six channels")
+    arrow(64.8, 67.7)
+    # colonne 4 : prédiction
+    box(68.0, 2.1, 15.5, 5.8, ["1/Q = $\\Sigma_i$ 1/Q$_i$",
+                               "Q + intervals,",
+                               "Q(h$_{ac}$), Q(R), f$_r$"],
+        title="prediction, zero fit")
+    arrow(83.8, 86.7)
+    # colonne 5 : confrontation
+    box(87.0, 2.1, 12.5, 5.8, ["measurements:",
+                               "4 laminates,",
+                               "36 disk Q"],
+        fc="#fdeaea", title="confrontation")
+    a3.set_xlim(0, 100); a3.set_ylim(0, 10.6)
+    a3.axis("off")
+    a3.set_title("(c) prediction strategy: separate piezoelectric and "
+                 "magnetic studies feed one additive budget", fontsize=9.5)
+
     fig.tight_layout()
     fig.savefig("fig_en_schematic.png", dpi=DPI)
     plt.close(fig)
