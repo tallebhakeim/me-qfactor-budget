@@ -25,12 +25,13 @@ NOMS = dict(pzt_meca="PZT mechanical (Q$_m$)",
 
 
 def fig_schematic():
-    fig = plt.figure(figsize=(9.6, 6.4))
-    gs = fig.add_gridspec(2, 2, height_ratios=[1.0, 0.95],
-                          width_ratios=[1.15, 1])
-    a1 = fig.add_subplot(gs[0, 0])
-    a2 = fig.add_subplot(gs[0, 1])
-    a3 = fig.add_subplot(gs[1, :])
+    fig = plt.figure(figsize=(10.2, 6.9))
+    gs = fig.add_gridspec(2, 1, height_ratios=[1.0, 1.05], hspace=0.42)
+    gtop = gs[0].subgridspec(1, 2, width_ratios=[1.15, 1], wspace=0.08)
+    gbot = gs[1].subgridspec(1, 4, wspace=0.55)
+    a1 = fig.add_subplot(gtop[0, 0])
+    a2 = fig.add_subplot(gtop[0, 1])
+    s1, s2, s3, s4 = (fig.add_subplot(gbot[0, k]) for k in range(4))
     # ---- (a) sample stack
     a1.add_patch(Rectangle((0, 0), 20, 1, fc="#f0c674", ec="k", lw=0.8))
     a1.add_patch(Rectangle((0, 1), 14, 1, fc="#9fb4cc", ec="k", lw=0.8))
@@ -79,62 +80,153 @@ def fig_schematic():
     a2.set_xlim(-0.6, 10.9); a2.set_ylim(-0.5, 3.8)
     a2.axis("off"); a2.set_title("(b) loss channels", fontsize=9.5)
 
-    # ---- (c) stratégie : matériaux -> structure -> canaux -> Q -> mesures
-    def box(x, y, w, h, lines, fc="#eef2f7", fs=7.3, title=None):
-        a3.add_patch(Rectangle((x, y), w, h, fc=fc, ec="#43516b", lw=0.9))
-        txt = "\n".join(lines)
-        a3.text(x + w / 2, y + h / 2, txt, ha="center", va="center",
-                fontsize=fs)
-        if title:
-            a3.text(x + w / 2, y + h + 0.35, title, ha="center",
-                    fontsize=7.8, style="italic", color="#43516b")
-    def arrow(x0, x1, y=5.0):
-        a3.add_patch(FancyArrowPatch((x0, y), (x1, y), arrowstyle="-|>",
-                                     mutation_scale=13, color="#43516b"))
-    # colonne 1 : données matériaux (une fois par matériau)
-    box(0.5, 6.6, 17.5, 2.6, ["PZT datasheet:",
-                              "Q$_m$, tan$\\,\\delta_\\varepsilon$"],
-        title="material data, once per material")
-    box(0.5, 3.6, 17.5, 2.6, ["Terfenol-D at bias:",
-                              "$\\sigma$, $\\chi$(H), d$_{33,m}$(H),",
-                              "Rayleigh (c$_{rev}$, $\\eta_\\infty$, H$_{a0}$)"])
-    box(0.5, 0.6, 17.5, 2.6, ["epoxy bond:",
-                              "G$_g$, t$_g$, tan$\\,\\delta_g$"])
-    arrow(18.3, 21.2)
-    # colonne 2 : structure (géométrie seule)
-    box(21.5, 2.6, 18.5, 4.8, ["structural mode",
-                               "(bar / disk, geometry only):",
-                               "energy fractions W$_i$, stress T(x),",
-                               "demagnetization N $\\rightarrow$ $\\lambda$"],
-        title="structure")
-    arrow(40.3, 43.2)
-    # colonne 3 : canaux
-    box(43.5, 1.6, 21.0, 6.8, ["loss channels 1/Q$_i$:",
-                               "PZT mechanical $\\cdot$ dielectric",
-                               "eddy currents (computed $\\lambda$)",
-                               "Rayleigh hysteresis (amplitude)",
-                               "bond shear lag $\\cdot$ electrical load"],
-        title="six channels")
-    arrow(64.8, 67.7)
-    # colonne 4 : prédiction
-    box(68.0, 2.1, 15.5, 5.8, ["1/Q = $\\Sigma_i$ 1/Q$_i$",
-                               "Q + intervals,",
-                               "Q(h$_{ac}$), Q(R), f$_r$"],
-        title="prediction, zero fit")
-    arrow(83.8, 86.7)
-    # colonne 5 : confrontation
-    box(87.0, 2.1, 12.5, 5.8, ["measurements:",
-                               "4 laminates,",
-                               "36 disk Q"],
-        fc="#fdeaea", title="confrontation")
-    a3.set_xlim(0, 100); a3.set_ylim(0, 10.6)
-    a3.axis("off")
-    a3.set_title("(c) prediction strategy: separate piezoelectric and "
-                 "magnetic studies feed one additive budget", fontsize=9.5)
-
-    fig.tight_layout()
-    fig.savefig("fig_en_schematic.png", dpi=DPI)
+    # ---- (c)-(f) Q SANS mesure sur le composite : frise calculée
+    _strategy_strip(fig, s1, s2, s3, s4)
+    fig.savefig("fig_en_schematic.png", dpi=DPI, bbox_inches="tight")
     plt.close(fig)
+
+
+CH_COL = dict(foucault="#c1272d", mag_hyst="#e39b3d", pzt_meca="#4878a8",
+              pzt_diel="#8fb3d9", colle="#999999")
+CH_LAB = dict(foucault="eddy", mag_hyst="hysteresis", pzt_meca="PZT mech.",
+              pzt_diel="PZT diel.", colle="bond")
+
+
+def _layer_etas(b):
+    """Facteurs de perte PAR COUCHE issus d'un budget (pour tracer la
+    réponse prédite) : canaux PZT -> couche PZT, canaux magnétiques et
+    colle -> couche Terfenol."""
+    r, inv = b["res"], b["inv"]
+    eta_p = (inv["pzt_meca"] + inv["pzt_diel"]) * r["Wtot"] / r["Wp"]
+    eta_m = (inv["mag_hyst"] + inv["foucault"] + inv["colle"]) \
+        * r["Wtot"] / sum(r["Wm"])
+    return eta_p, eta_m
+
+
+def _strategy_strip(fig, s1, s2, s3, s4):
+    import qfactor_disk as qd
+    INK = "#43516b"
+
+    # (c) données matériau seules
+    H = np.linspace(20, 1500, 150)
+    d33 = np.array([qd.en.energy_coeffs("Terfenol-D", h, -23.8e6)["d33m"]
+                    for h in H]) * 1e9
+    s1.plot(H, d33, "-", color=BLUE, lw=1.4)
+    s1.plot(525, 18.7, "o", color=RED, ms=6)
+    s1.annotate("bias\n525 Oe", xy=(525, 18.7), xytext=(950, 19.5),
+                fontsize=6.5, color=RED,
+                arrowprops=dict(arrowstyle="->", color=RED, lw=0.7))
+    s1.set_xlabel("H [Oe]", fontsize=7.5)
+    s1.set_ylabel("Terfenol-D d$_{33,m}$ [nm/A]", fontsize=7.5)
+    s1.tick_params(labelsize=6.5)
+    s1.set_ylim(0, 34)
+    s1.text(0.03, 0.97, "PZT-5H datasheet:\nQ$_m$ = 65, tan$\\,\\delta$ = 0.02\n"
+            "Terfenol-D: $\\sigma$, $\\chi$(H),\nRayleigh triplet",
+            transform=s1.transAxes, fontsize=6.0, va="top",
+            bbox=dict(fc="white", ec=INK, lw=0.6, alpha=0.9))
+    s1.set_title("(c) material data only", fontsize=8.5)
+
+    # (d) où va l'énergie : mode structurel calculé
+    asm = qm.assemble(qm.REF, 200)
+    fr, _ = qm.find_resonance(asm)
+    r = qm.solve_harm(asm, fr)
+    xc = 0.5 * (asm["x"][:-1] + asm["x"][1:]) * 1e3
+    ep = qm.PZT["E"] * np.abs(r["S"])**2
+    m0 = qm.MAGS["Terfenol-D@bias"]
+    em = np.where(asm["in1"], m0["E"] * np.abs(r["S"] - m0["d33m"] * qm.OE)**2,
+                  np.nan)
+    vmax = np.nanmax(np.concatenate([ep, em]))
+    edges = asm["x"] * 1e3
+    s2.pcolormesh(edges, [0, 1], (ep / vmax)[None, :], cmap="YlOrRd",
+                  vmin=0, vmax=1, shading="flat")
+    s2.pcolormesh(edges, [1, 2], (em / vmax)[None, :], cmap="YlOrRd",
+                  vmin=0, vmax=1, shading="flat")
+    s2.add_patch(Rectangle((0, 0), 20, 1, fill=False, ec="k", lw=0.8))
+    s2.add_patch(Rectangle((0, 1), 14, 1, fill=False, ec="k", lw=0.8))
+    s2.text(17, 0.5, "PZT", fontsize=7, ha="center", va="center")
+    s2.text(7, 2.35, "Terfenol-D", fontsize=7, ha="center")
+    fp = r["Wp"] / r["Wtot"] * 100
+    fm = sum(r["Wm"]) / r["Wtot"] * 100
+    fe = r["We"] / r["Wtot"] * 100
+    s2.text(10, -0.75, f"energy: PZT {fp:.0f}%  ·  TD {fm:.0f}%  ·  "
+            f"electric {fe:.0f}%", fontsize=6.5, ha="center")
+    s2.text(10, -1.35, f"mode at f$_r$ = {fr/1e3:.1f} kHz (geometry only)",
+            fontsize=6.3, ha="center", color=INK)
+    s2.set_xlim(-0.5, 20.5); s2.set_ylim(-1.7, 2.8)
+    s2.axis("off")
+    s2.set_title("(d) where the energy goes", fontsize=8.5)
+
+    # (e) chaque canal pondéré par sa fraction : 1/Q = somme
+    bud = qm.q_budget(qm.REF, nx=200, H_ac_oe=1.0)
+    blo, bhi = qm.q_bracket(qm.REF, 200, H_ac_oe=1.0)
+    order = ["foucault", "mag_hyst", "pzt_meca", "pzt_diel", "colle"]
+    left = 0.0
+    for k in order:
+        v = bud["inv"][k] * 100
+        s3.barh(0, v, left=left, color=CH_COL[k], ec="white", lw=0.5,
+                height=0.55)
+        if v > 0.5:
+            s3.text(left + v / 2, 0, CH_LAB[k], rotation=90, fontsize=6,
+                    ha="center", va="center", color="white")
+        left += v
+    s3.annotate("", xy=(left, 0.52), xytext=(0, 0.52),
+                arrowprops=dict(arrowstyle="<->", lw=0.8, color=INK))
+    s3.text(left / 2, 0.66, f"$\\Sigma_i$ 1/Q$_i$ = {left/100:.3f}",
+            fontsize=6.8, ha="center", color=INK)
+    s3.text(left / 2, -0.62, f"Q = {bud['Q']:.1f}   "
+            f"[{blo['Q']:.1f} ; {bhi['Q']:.1f}]", fontsize=7.6,
+            ha="center", weight="bold", color=INK)
+    s3.set_xlim(0, left * 1.02); s3.set_ylim(-0.95, 0.95)
+    s3.set_yticks([])
+    s3.set_xlabel("1/Q$_i$ [×10$^{-2}$]", fontsize=7.5)
+    s3.tick_params(labelsize=6.5)
+    for sp in ("top", "right", "left"):
+        s3.spines[sp].set_visible(False)
+    s3.set_title("(e) weight each channel, sum", fontsize=8.5)
+
+    # (f) résonance prédite (forme normalisée), mesure = validation seule
+    fs = np.linspace(62e3, 79e3, 260)
+    curves = {}
+    for nm, b in (("nom", bud), ("lo", blo), ("hi", bhi)):
+        ep_, em_ = _layer_etas(b)
+        asb = qm.assemble(qm.REF, 120, eta_p=ep_, eta_mag=em_)
+        a = qm.sweep(asb, fs)
+        curves[nm] = a / a.max()
+    s4.fill_between(fs / 1e3, np.minimum(curves["lo"], curves["hi"]),
+                    np.maximum(curves["lo"], curves["hi"]),
+                    color=BLUE, alpha=0.22, lw=0, label="material intervals")
+    s4.plot(fs / 1e3, curves["nom"], "-", color=BLUE, lw=1.4,
+            label="predicted")
+    mc = np.load("malleron_measured_curve.npz")
+    s4.plot(mc["f_kHz"], mc["alpha"] / mc["alpha"].max(), ".", ms=1.6,
+            color=GREY, alpha=0.55, label="measured (validation)")
+    s4.set_xlabel("frequency [kHz]", fontsize=7.5)
+    s4.set_ylabel("normalized α$_E$", fontsize=7.5)
+    s4.tick_params(labelsize=6.5)
+    s4.set_ylim(0, 1.12)
+    s4.legend(fontsize=5.8, loc="upper left", framealpha=0.9)
+    s4.set_title("(f) predicted resonance", fontsize=8.5)
+
+    # flèches entre étapes + bandeau
+    fig.canvas.draw()
+    rend = fig.canvas.get_renderer()
+    inv = fig.transFigure.inverted()
+    for a, b in ((s1, s2), (s2, s3), (s3, s4)):
+        pa = a.get_position()
+        # la flèche s'arrête AVANT les étiquettes d'axe de la cible
+        tb = b.get_tightbbox(rend).transformed(inv)
+        y = 0.5 * (pa.y0 + pa.y1)
+        x0 = a.get_tightbbox(rend).transformed(inv).x1 if a is s1 else pa.x1
+        fig.add_artist(FancyArrowPatch(
+            (x0 + 0.004, y), (tb.x0 - 0.004, y),
+            transform=fig.transFigure, arrowstyle="-|>",
+            mutation_scale=14, color=INK, lw=1.2))
+    p1, p4 = s1.get_position(), s4.get_position()
+    fig.text(0.5 * (p1.x0 + p4.x1), p1.y1 + 0.075,
+             "Predicting Q with no measurement on the composite: material "
+             "data  →  structural mode  →  weighted loss channels  →  "
+             "resonance", ha="center", fontsize=8.8, color=INK,
+             style="italic")
 
 
 def main():
