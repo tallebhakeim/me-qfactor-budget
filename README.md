@@ -64,6 +64,7 @@ from this file, so no reference metadata is ever typed from memory.
 | `qfactor_hysteresis.py` | generalized Rayleigh minor-loop loss, stress-equivalent field swing |
 | `run_budget.py` | report: reference budget, 4-sample validation, Q(h_ac), inverse bounds |
 | `qfactor_disk.py`, `run_disk_transfer.py` | radial-mode disk transfer (36 identified Q, Rizzo 2020) |
+| `run_multiscale.py`, `data_ulises/` | same-plates multiscale check: bare-plate impedance fits (BVD, projected Lorentzian) and assembly predictions; raw .mat files measured by U. Acevedo-Salas (GeePs, ANR BIOMEN, 2019) |
 | `verify_qfactor.py` | 21 automated tests (analytic limits, sum rules, bandwidth-budget identity, mesh convergence, sample brackets) |
 | `make_figures_en.py` | manuscript figures |
 | `fig_en_*.png` | pre-built figures |

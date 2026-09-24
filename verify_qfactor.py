@@ -231,6 +231,25 @@ def main():
           f"Q_bw mesuré = {Qbw_meas:.1f} vs nominal {bud['Q']:.1f}, "
           f"encadrement [{blo['Q']:.0f};{bhi['Q']:.0f}]")
 
+    # 24. MULTI-ÉCHELLE « mêmes lames » (données Acevedo-Salas) : fits
+    #     cohérents et lame TD nue prédite par les canaux magnétiques seuls
+    try:
+        import run_multiscale as ms
+        pzt = ms.fit_pzt()
+        td1 = ms.fit_td("TD_1mm_1_Z_50to80kHz_Hdc506")
+        td4 = ms.fit_td("TD_1mm_4_Z_50to80kHz_Hdc506")
+        tdp = ms.predict_td_bare(0.5 * (td1["f0"] + td4["f0"]))
+        Qm_ok = 40 <= pzt["Q"] <= 80 and 55e9 <= pzt["Ep"] <= 70e9
+        Qtd_meas = 0.5 * (td1["Q"] + td4["Q"])
+        ratio = tdp["Q"][1.0] / Qtd_meas
+        check("multi-échelle : PZT nu (Q_m, E_p) plausibles ; lame TD nue "
+              "prédite à ±40 % par les canaux magnétiques seuls",
+              Qm_ok and 1 / 1.4 < ratio < 1.4,
+              f"Q_m = {pzt['Q']:.0f}, E_p = {pzt['Ep']/1e9:.1f} GPa ; "
+              f"TD nu prédit {tdp['Q'][1.0]:.1f} vs mesuré {Qtd_meas:.1f}")
+    except (ImportError, FileNotFoundError):
+        print("[SKIP] test 24 (données multi-échelle non disponibles)")
+
     n_ok = sum(ok for _, ok in TESTS)
     print(f"\n{n_ok}/{len(TESTS)} PASS")
     return n_ok == len(TESTS)
