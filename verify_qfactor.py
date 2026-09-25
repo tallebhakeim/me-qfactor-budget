@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Vérification du PoC "Q par bilan d'énergie" v3 — 18 tests.
+Vérification du PoC "Q par bilan d'énergie" v3 — 25 tests.
 Auto-cohérence du modèle, limites analytiques (Foucault, Rayleigh, démag),
 monotonie des bornes, non-linéarité Q(H_ac), raideur circuit ouvert,
 confrontation aux 4 échantillons Malleron, et branchement FEM 2D (layer_eta).
@@ -249,6 +249,23 @@ def main():
               f"TD nu prédit {tdp['Q'][1.0]:.1f} vs mesuré {Qtd_meas:.1f}")
     except (ImportError, FileNotFoundError):
         print("[SKIP] test 24 (données multi-échelle non disponibles)")
+
+    # 25. MODÈLE 3D AJUSTÉ (thèse Do 2019, fig. 3.13 digitalisée, mêmes
+    #     lames) : hauteur du pic reproduite (±10 %) mais Q(-3 dB) ~ 2x le Q
+    #     mesuré ; le budget nominal est du côté de la mesure
+    try:
+        import run_do3d_crosscheck as d3
+        r = d3.main(verbose=False)
+        qm_, q3 = r["fig313"]["meas"]["Q"], r["fig313"]["model3d"]["Q"]
+        pr = r["fig313"]["peak_ratio"]
+        check("modèle 3D ajusté : pic à ±10 % de la mesure, Q(-3 dB) > 1,8 x "
+              "Q mesuré, budget nominal plus proche de la mesure que le 3D",
+              abs(pr - 1) < 0.10 and q3 > 1.8 * qm_
+              and abs(bud["Q"] - qm_) < abs(q3 - qm_),
+              f"pic 3D/mesure = {pr:.3f} ; Q mesuré {qm_:.1f}, Q 3D {q3:.1f}, "
+              f"budget {bud['Q']:.1f}")
+    except (ImportError, FileNotFoundError):
+        print("[SKIP] test 25 (courbes 3D digitalisées non disponibles)")
 
     n_ok = sum(ok for _, ok in TESTS)
     print(f"\n{n_ok}/{len(TESTS)} PASS")

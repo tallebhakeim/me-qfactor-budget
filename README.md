@@ -36,14 +36,16 @@ Metglas laminates measured in K. Malleron's thesis (Sorbonne Universite,
 
 ```bash
 python3 run_budget.py        # full report + 3-panel figure
-python3 verify_qfactor.py    # verification suite (21 tests; 17 self-contained)
-python3 make_figures_en.py   # manuscript figures 1-6
-python3 run_disk_transfer.py # disk transfer report + figure 7
+python3 verify_qfactor.py    # verification suite (25 tests; 21 self-contained)
+python3 make_figures_en.py   # manuscript figures 1-7
+python3 run_disk_transfer.py # disk transfer report + figure 8
+python3 run_multiscale.py    # same-plates multiscale check + figure 4
+python3 run_do3d_crosscheck.py  # comparison with the fitted-damping 3-D model
 ```
 
 Requires Python 3 with numpy and matplotlib (scipy for the disk extension).
 
-`run_fem2d_crosscheck.py` (test 18, figure 6) additionally requires an
+`run_fem2d_crosscheck.py` (test 18, figure 7) additionally requires an
 internal 2-D coupled FEM solver that is not distributed here, and
 `qfactor_disk.py` (transfer to the radial-mode disk data set of
 G. Rizzo's thesis, Universite Paris-Saclay 2020) requires the internal
@@ -52,7 +54,7 @@ verification suite skips it cleanly when absent. All budget results are
 produced by the self-contained scripts above.
 
 `make_refs.py` rebuilds `refs_verified.json`, the Crossref-canonical
-metadata of the 37 references: the manuscript bibliography is generated
+metadata of the 41 references: the manuscript bibliography is generated
 from this file, so no reference metadata is ever typed from memory.
 
 ## Files
@@ -65,7 +67,8 @@ from this file, so no reference metadata is ever typed from memory.
 | `run_budget.py` | report: reference budget, 4-sample validation, Q(h_ac), inverse bounds |
 | `qfactor_disk.py`, `run_disk_transfer.py` | radial-mode disk transfer (36 identified Q, Rizzo 2020) |
 | `run_multiscale.py`, `data_ulises/` | same-plates multiscale check: bare-plate impedance fits (BVD, projected Lorentzian) and assembly predictions; raw .mat files measured by U. Acevedo-Salas (GeePs, ANR BIOMEN, 2019) |
-| `verify_qfactor.py` | 21 automated tests (analytic limits, sum rules, bandwidth-budget identity, mesh convergence, sample brackets) |
+| `run_do3d_crosscheck.py`, `make_do2019_curves.py` | confrontation with the fitted-damping 3-D A-V-u model of T. A. Do's thesis (Sorbonne Universite 2019): digitized figures 3.13 and 3.19(c); peak height reproduced, bandwidth not (Q 39 vs 18) |
+| `verify_qfactor.py` | 25 automated tests (analytic limits, sum rules, bandwidth-budget identity, mesh convergence, sample brackets, digitized-curve checks) |
 | `make_figures_en.py` | manuscript figures |
 | `fig_en_*.png` | pre-built figures |
 

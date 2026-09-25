@@ -15,6 +15,7 @@ import qfactor_hysteresis as qh
 
 NX = 200
 BLUE, RED, GREY = "#4878a8", "#c1272d", "#666666"
+GREEN = "#3a8f4a"
 DPI = 200
 
 NOMS = dict(pzt_meca="PZT mechanical (Q$_m$)",
@@ -372,6 +373,12 @@ def main():
             label="2-D FEM, predicted per-layer losses")
     ax.plot(hS["freqs"] / 1e3, hS["alpha"], "-", color=BLUE,
             label=f"idem + epoxy stiffening (s = {s_ep:.2f})")
+    # modèle 3D ajusté de la thèse Do 2019 (fig. 3.13), même échelle que la
+    # mesure (pic tabulé 19,8) : hauteur reproduite, largeur non (Q ~ 39)
+    d3 = np.load("do2019_fig313_curves.npz")
+    sc = ms["a_res"] / d3["V_meas"].max()
+    ax.plot(d3["f_3d"], d3["V_3d"] * sc, "-.", color=GREEN, lw=1.2,
+            label="3-D FEM, fitted Rayleigh damping (Q = 39)")
     ax.plot(ms["f_r"] / 1e3, ms["a_res"], "*", color=RED, ms=13,
             label=f"tabulated peak ({ms['a_res']} V cm$^{{-1}}$ Oe$^{{-1}}$)")
     ax.axhline(ms["a_stat"], color=GREY, ls=":", lw=1.0)

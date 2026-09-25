@@ -34,6 +34,12 @@ WANTED = [
         "de capteurs biomedicaux autonomes, PhD thesis, Sorbonne Universite, "
         "Paris (2018), doi:10.70675/41bf3f16z0636z4a7bz830dz3f570115aabb.")),
     dict(key="do2019", doi="10.1109/TMAG.2019.2926237"),
+    dict(key="do2019these", type="manual", text=(
+        "T. A. Do, Multiphysic Modeling of Second Generation Magnetoelectric "
+        "Materials: Application to Connected Objects, PhD thesis, Sorbonne "
+        "Universite, Paris (2019), NNT 2019SORUS486, "
+        "doi:10.70675/31d31b50z2e3dz41f7za1afzc7a0ca6faa6c.")),
+    dict(key="nader2003", doi="10.1117/12.483962"),
     dict(key="talleb2015", doi="10.1109/tmag.2014.2357492"),
     dict(key="talleb2022", doi="10.1016/j.compstruct.2022.116260"),
     # --- pertes piézo

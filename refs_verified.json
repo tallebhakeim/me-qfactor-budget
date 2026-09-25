@@ -225,6 +225,32 @@
   "doi": "10.1109/tmag.2019.2926237"
  },
  {
+  "key": "do2019these",
+  "type": "manual",
+  "text": "T. A. Do, Multiphysic Modeling of Second Generation Magnetoelectric Materials: Application to Connected Objects, PhD thesis, Sorbonne Universite, Paris (2019), NNT 2019SORUS486, doi:10.70675/31d31b50z2e3dz41f7za1afzc7a0ca6faa6c."
+ },
+ {
+  "key": "nader2003",
+  "type": "crossref",
+  "via": "doi",
+  "authors": [
+   "Gilder Nader",
+   "Emilio C. N. Silva",
+   "Julio C. Adamowski"
+  ],
+  "title": "&lt;title&gt;Determination of piezoelectric transducer damping by using experimental and finite element simulations&lt;/title&gt;",
+  "container": "SPIE Proceedings",
+  "short_container": [
+   ""
+  ],
+  "volume": "5052",
+  "issue": "",
+  "page": "116-127",
+  "article_number": "",
+  "year": 2003,
+  "doi": "10.1117/12.483962"
+ },
+ {
   "key": "talleb2015",
   "type": "crossref",
   "via": "doi",
