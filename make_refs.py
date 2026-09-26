@@ -40,6 +40,11 @@ WANTED = [
         "Universite, Paris (2019), NNT 2019SORUS486, "
         "doi:10.70675/31d31b50z2e3dz41f7za1afzc7a0ca6faa6c.")),
     dict(key="nader2003", doi="10.1117/12.483962"),
+    dict(key="karimi2024these", type="manual", text=(
+        "S. Karimi, Investigation of New Magnetoelectric Transducers for "
+        "Remote Powering of Micro-Systems in Complex Environments, PhD "
+        "thesis, Sorbonne Universite, Paris (2024), NNT 2024SORUS151, "
+        "doi:10.70675/2c6c2d15z8ea4z4a46zadcbzbf3ac9aebd1e.")),
     dict(key="talleb2015", doi="10.1109/tmag.2014.2357492"),
     dict(key="talleb2022", doi="10.1016/j.compstruct.2022.116260"),
     # --- pertes piézo

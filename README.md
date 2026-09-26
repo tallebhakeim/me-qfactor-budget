@@ -54,7 +54,7 @@ verification suite skips it cleanly when absent. All budget results are
 produced by the self-contained scripts above.
 
 `make_refs.py` rebuilds `refs_verified.json`, the Crossref-canonical
-metadata of the 41 references: the manuscript bibliography is generated
+metadata of the 42 references: the manuscript bibliography is generated
 from this file, so no reference metadata is ever typed from memory.
 
 ## Files

@@ -251,6 +251,11 @@
   "doi": "10.1117/12.483962"
  },
  {
+  "key": "karimi2024these",
+  "type": "manual",
+  "text": "S. Karimi, Investigation of New Magnetoelectric Transducers for Remote Powering of Micro-Systems in Complex Environments, PhD thesis, Sorbonne Universite, Paris (2024), NNT 2024SORUS151, doi:10.70675/2c6c2d15z8ea4z4a46zadcbzbf3ac9aebd1e."
+ },
+ {
   "key": "talleb2015",
   "type": "crossref",
   "via": "doi",
