@@ -68,9 +68,14 @@ SAMPLES = {
     "E (M-P, 10)":    dict(D=10e-3, tp=1e-3, tms=[1e-3],       f_meas=180.4e3),
     "F (P-M-P, 10)":  dict(D=10e-3, tp=2e-3, tms=[1e-3],       f_meas=199.9e3),
 }
-# Q identifiés (Table 2.3), biais B_dc décroissants [0.1 .. 0.012 T]
+# Biais B_dc décroissants [0.1 .. 0.012 T] (Table 2.3 de la thèse Rizzo)
 BIAS_T = [0.1, 0.058, 0.036, 0.023, 0.016, 0.012]
-Q_MEAS = {
+# Q TELS QUE PUBLIÉS (Table 2.3). Vérification (26/09/2026) sur les 12 lignes
+# où L_m, C_m, R_m sont lisibles : Q_tab = sqrt(L_m/C_m)/(R_m·phi_p²) à 1 %,
+# alors que L_m (masse dynamique), C_m et R_m sont côté MÉCANIQUE
+# (|Y|max = phi_p²/R_m = 9,8 mS, Table 2.1). Le Q cohérent du circuit est
+# donc Q_m = sqrt(L_m/C_m)/R_m = Q_tab · phi_p².
+Q_TAB = {
     "A (M-P, 16)":   [117.0, 91.2, 94.3, 119.5, 127.0, 130.8],
     "B (M-P, 16)":   [139.4, 112.4, 92.5, 101.3, 111.8, 187.5],
     "C (M-P-M, 16)": [173.2, 172.4, 185.8, 211.5, 230.1, 239.3],
@@ -78,6 +83,42 @@ Q_MEAS = {
     "E (M-P, 10)":   [139.9, 166.6, 186.2, 204.6, 304.7, 314.4],
     "F (P-M-P, 10)": [266.5, 287.5, 326.4, 363.5, 389.8, 394.6],
 }
+# facteur piézoélectrique phi_p de la même table (par biais)
+PHI_P = {
+    "A (M-P, 16)":   [0.72, 0.71, 0.70, 0.69, 0.69, 0.69],
+    "B (M-P, 16)":   [0.65, 0.64, 0.63, 0.62, 0.58, 0.57],
+    "C (M-P-M, 16)": [0.69, 0.68, 0.68, 0.68, 0.68, 0.68],
+    "D (P-M-P, 16)": [0.65, 0.64, 0.64, 0.64, 0.64, 0.64],
+    "E (M-P, 10)":   [0.49, 0.48, 0.48, 0.48, 0.44, 0.44],
+    "F (P-M-P, 10)": [0.58, 0.58, 0.57, 0.57, 0.57, 0.57],
+}
+# Q MÉCANIQUES COHÉRENTS = cibles du transfert
+Q_MEAS = {k: [q * p**2 for q, p in zip(Q_TAB[k], PHI_P[k])] for k in Q_TAB}
+# lignes (L mH, C nF, R ohm, phi, Q_tab) lisibles de la Table 2.3 : identité
+RIZZO_ROWS = {
+    ("A (M-P, 16)", 0.1): (2.64, 0.56, 36.14, 0.72, 117.0),
+    ("A (M-P, 16)", 0.036): (2.64, 0.59, 45.7, 0.70, 94.32),
+    ("A (M-P, 16)", 0.012): (2.64, 0.60, 33.63, 0.69, 130.78),
+    ("B (M-P, 16)", 0.1): (3.69, 0.39, 52.66, 0.65, 139.35),
+    ("B (M-P, 16)", 0.012): (3.69, 0.40, 50.65, 0.57, 187.5),
+    ("C (M-P-M, 16)", 0.1): (4.98, 0.30, 48.97, 0.69, 173.15),
+    ("C (M-P-M, 16)", 0.012): (4.98, 0.31, 36.59, 0.68, 239.34),
+    ("D (P-M-P, 16)", 0.1): (6.01, 0.25, 27.14, 0.65, 429.48),
+    ("D (P-M-P, 16)", 0.012): (6.01, 0.26, 23.25, 0.64, 512.34),
+    ("E (M-P, 10)", 0.1): (1.81, 0.43, 60.65, 0.49, 139.85),
+    ("E (M-P, 10)", 0.012): (1.81, 0.45, 32.54, 0.44, 314.4),
+    ("F (P-M-P, 10)", 0.1): (2.88, 0.22, 40.06, 0.58, 266.46),
+    ("F (P-M-P, 10)", 0.012): (2.88, 0.27, 27.75, 0.57, 394.57),
+}
+
+
+def rizzo_q_identity():
+    """Renvoie max |Q_tab·phi² / (sqrt(L/C)/R) − 1| sur les lignes lisibles."""
+    worst = 0.0
+    for (L, C, R, phi, Q) in RIZZO_ROWS.values():
+        qc = np.sqrt(L * 1e-3 / (C * 1e-9)) / R
+        worst = max(worst, abs(Q * phi**2 / qc - 1))
+    return worst
 
 
 def pic_modulus():
@@ -127,6 +168,13 @@ def radial_mode(sample, nr=400):
                 layers=layers, sample=s)
 
 
+# précontrainte de collage appliquée au modèle énergétique du Terfenol (Pa) :
+# MÊME valeur que pour les barreaux (−23,8 MPa, travail source), une seule
+# table de matériaux. 0.0 = ancienne convention (v11-v13), gardée en
+# sensibilité : le point de fonctionnement passe à chi ~ 1 et Q double.
+PRESTRESS_PA = -23.8e6
+
+
 def bias_interne(H_app_oe, N):
     """Biais interne : H (1 + chi(H) N) = H_app. La susceptibilité chi(H)
     décroissante peut donner PLUSIEURS racines (bistabilité du point de
@@ -134,7 +182,7 @@ def bias_interne(H_app_oe, N):
     protocole (aimants approchés depuis la saturation). Balayage en grille
     puis raffinement. Renvoie (H_int_oe, d33m, chi)."""
     Hs = np.linspace(1.0, H_app_oe, 240)
-    chis = np.array([max(en.energy_coeffs("Terfenol-D", float(h), 0.0)["mu_r"]
+    chis = np.array([max(en.energy_coeffs("Terfenol-D", float(h), PRESTRESS_PA)["mu_r"]
                          - 1.0, 1e-3) for h in Hs])
     g = Hs * (1 + chis * N) - H_app_oe
     idx = np.where(np.diff(np.sign(g)) != 0)[0]
@@ -143,7 +191,7 @@ def bias_interne(H_app_oe, N):
         h1, h2 = Hs[i], Hs[i + 1]
         for _ in range(30):
             hm = 0.5 * (h1 + h2)
-            chim = max(en.energy_coeffs("Terfenol-D", hm, 0.0)["mu_r"] - 1.0,
+            chim = max(en.energy_coeffs("Terfenol-D", hm, PRESTRESS_PA)["mu_r"] - 1.0,
                        1e-3)
             if (hm * (1 + chim * N) - H_app_oe) * (g[i]) > 0:
                 h1 = hm
@@ -152,7 +200,7 @@ def bias_interne(H_app_oe, N):
         H = 0.5 * (h1 + h2)
     else:
         H = H_app_oe
-    c = en.energy_coeffs("Terfenol-D", max(H, 1.0), 0.0)
+    c = en.energy_coeffs("Terfenol-D", max(H, 1.0), PRESTRESS_PA)
     return H, c["d33m"], max(c["mu_r"] - 1.0, 1e-3)
 
 
@@ -174,7 +222,8 @@ def _N_of(D, t):
     return _N_CACHE[key]
 
 
-def q_budget_disk(sample, B_dc_T, corner="nom", H_ac_oe=1.0, max_iter=60):
+def q_budget_disk(sample, B_dc_T, corner="nom", H_ac_oe=1.0, max_iter=60,
+                  N_override=None):
     """Q auto-cohérent du disque au biais donné. Échelle : le mode unitaire
     (u = J1) donne le profil de contrainte Tm ; la réponse réelle est mise à
     l'échelle T0 = E.Q.d33m.h_int (amplification modale), toutes les énergies
@@ -194,7 +243,7 @@ def q_budget_disk(sample, B_dc_T, corner="nom", H_ac_oe=1.0, max_iter=60):
     shape = np.abs(md["Tm"]) / Tmax_u
     lay = []
     for t in s["tms"]:
-        N = _N_of(s["D"], t)
+        N = _N_of(s["D"], t) if N_override is None else N_override
         H_int, d33m, chi = bias_interne(H_app, N)
         lam = (1.0 - N) / (1.0 + chi * N)
         p1 = _eddy(1.0, f, chi + 1.0, TERF["sigma"], d33m, lam, t)
@@ -221,7 +270,7 @@ def q_budget_disk(sample, B_dc_T, corner="nom", H_ac_oe=1.0, max_iter=60):
             break
         Q = 0.5 * (Q + Qn)
     return dict(sample=sample, f=f, Q=Qn, iters=it + 1, H_app_oe=H_app,
-                lay=lay)
+                lay=lay, invQ_pzt=invQ_pzt)
 
 
 def _eddy(T_amp, f, mu_r, sigma, d33m, lam, t, npts=200):

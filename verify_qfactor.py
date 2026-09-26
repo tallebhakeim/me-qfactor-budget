@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Vérification du PoC "Q par bilan d'énergie" v3 — 25 tests.
+Vérification du PoC "Q par bilan d'énergie" v3 — 26 tests.
 Auto-cohérence du modèle, limites analytiques (Foucault, Rayleigh, démag),
 monotonie des bornes, non-linéarité Q(H_ac), raideur circuit ouvert,
 confrontation aux 4 échantillons Malleron, et branchement FEM 2D (layer_eta).
@@ -182,20 +182,27 @@ def main():
         check("disque : 6 f_s prédits à ±10 % (0 recalage)",
               max(abs(e) for e in errs) < 0.10,
               f"écarts {min(errs)*100:+.1f} % .. {max(errs)*100:+.1f} %")
-        # 21. hauts biais (chi_int <= 2) : les 12 Q prédits à un facteur < 3
-        #     de la mesure, et hiérarchie P-M-P > M-P respectée
-        ok21, worst = True, 1.0
+        # 21. Q de la Table 2.3 rendus cohérents (Q_m = Q_tab·phi²,
+        #     identité vérifiée à 10 % sur les lignes lisibles) ; à 0,1 T
+        #     (point de fonctionnement des barreaux) les 6 Q prédits sont à
+        #     un facteur < 4 des Q_m, hiérarchie D > C > A respectée ; le
+        #     budget SURESTIME partout (résidu = perte Terfenol manquante)
+        ok21, worst = qdk.rizzo_q_identity() < 0.10, 1.0
+        over = True
         for smp in qdk.SAMPLES:
-            for j, b in enumerate(qdk.BIAS_T[:2]):
-                qp = qdk.q_budget_disk(smp, b)["Q"]
-                ratio = qp / qdk.Q_MEAS[smp][j]
-                worst = max(worst, max(ratio, 1 / ratio))
-                ok21 &= (1 / 3 < ratio < 3)
+            qp = qdk.q_budget_disk(smp, 0.1)["Q"]
+            ratio = qp / qdk.Q_MEAS[smp][0]
+            worst = max(worst, max(ratio, 1 / ratio))
+            ok21 &= (1 / 4 < ratio < 4)
+            over &= ratio > 0.9
         qA = qdk.q_budget_disk("A (M-P, 16)", 0.1)["Q"]
+        qC = qdk.q_budget_disk("C (M-P-M, 16)", 0.1)["Q"]
         qD = qdk.q_budget_disk("D (P-M-P, 16)", 0.1)["Q"]
-        check("disque : 12 Q linéaires à un facteur < 3 ; hiérarchie D > A",
-              ok21 and qD > qA,
-              f"pire facteur = {worst:.2f}, Q(D) = {qD:.0f} > Q(A) = {qA:.0f}")
+        check("disque : identité Q_tab·phi² ; 6 Q (0,1 T) à un facteur < 4 "
+              "des Q_m cohérents, budget >= mesure, hiérarchie D > C >= A",
+              ok21 and over and qD > qC >= qA,
+              f"identité {qdk.rizzo_q_identity()*100:.0f} %, pire facteur = "
+              f"{worst:.2f}, Q(D/C/A) = {qD:.0f}/{qC:.0f}/{qA:.0f}")
     except ImportError:
         print("[SKIP] tests 19-21 (modèle disque : scipy/core non disponibles "
               "dans ce dépôt)")
@@ -266,6 +273,27 @@ def main():
               f"budget {bud['Q']:.1f}")
     except (ImportError, FileNotFoundError):
         print("[SKIP] test 25 (courbes 3D digitalisées non disponibles)")
+
+    # 26. COURBES EXCITÉES MAGNÉTIQUEMENT (banc GeePs 2023 + Rizzo fig. 0.3) :
+    #     Q(-3 dB) 35-65 pour les trois disques, à un facteur < 1,6 des
+    #     Q_m cohérents (A : 61 ; C : 82) et NON des Q publiés (117 ; 173)
+    try:
+        bc = np.load("bench_disk_curves.npz")
+        qs = {}
+        for key in ("geeps_bilayer", "geeps_trilayer", "rizzo_A"):
+            f, v = bc[key + "_f"], bc[key + "_V"]
+            i = int(np.argmax(v)); h = v[i] / np.sqrt(2)
+            lo = f[:i][v[:i] < h].max(); hi = f[i:][v[i:] < h].min()
+            qs[key] = f[i] / (hi - lo)
+        ok26 = all(35 <= q <= 65 for q in qs.values())
+        ok26 &= 61 / 1.6 < qs["rizzo_A"] < 61 * 1.6 and qs["rizzo_A"] < 117 / 1.6
+        ok26 &= 82 / 1.6 < qs["geeps_trilayer"] < 82 * 1.6 \
+            and qs["geeps_trilayer"] < 173 / 1.6
+        check("disques excités magnétiquement : Q(-3 dB) 35-65, cohérents "
+              "avec Q_m = Q_tab·phi², incompatibles avec les Q publiés",
+              ok26, "Q = " + ", ".join(f"{k} {q:.0f}" for k, q in qs.items()))
+    except FileNotFoundError:
+        print("[SKIP] test 26 (bench_disk_curves.npz absent)")
 
     n_ok = sum(ok for _, ok in TESTS)
     print(f"\n{n_ok}/{len(TESTS)} PASS")

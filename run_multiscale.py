@@ -137,7 +137,14 @@ def predict_td_bare(f0_meas, H_app_oe=506.0, H_ac_oe=(0.1, 1.0), corner="nom"):
     N = dl.demag_N(L_TD, W, T1)
     # biais interne auto-cohérent avec chi(H) du modèle énergie
     import qfactor_disk as qd
-    H_int, d33m, chi = qd.bias_interne(H_app_oe, N)
+    # lame NUE : aucune précontrainte de collage (la table des barreaux et
+    # des disques collés porte -23,8 MPa)
+    pre = qd.PRESTRESS_PA
+    qd.PRESTRESS_PA = 0.0
+    try:
+        H_int, d33m, chi = qd.bias_interne(H_app_oe, N)
+    finally:
+        qd.PRESTRESS_PA = pre
     lam = (1 - N) / (1 + chi * N)
     x = np.linspace(0, L_TD, 200)
     dx = x[1] - x[0]
