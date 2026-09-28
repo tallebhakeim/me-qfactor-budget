@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Vérification du PoC "Q par bilan d'énergie" v3 — 26 tests.
+Vérification du PoC "Q par bilan d'énergie" v3 — 27 tests.
 Auto-cohérence du modèle, limites analytiques (Foucault, Rayleigh, démag),
 monotonie des bornes, non-linéarité Q(H_ac), raideur circuit ouvert,
 confrontation aux 4 échantillons Malleron, et branchement FEM 2D (layer_eta).
@@ -294,6 +294,26 @@ def main():
               ok26, "Q = " + ", ".join(f"{k} {q:.0f}" for k, q in qs.items()))
     except FileNotFoundError:
         print("[SKIP] test 26 (bench_disk_curves.npz absent)")
+
+    # 27. FAMILLE FILMS Ni/LiNbO3/Ni (3 dispositifs, 7 mesures) : les 7 Q
+    #     mesurés (bande passante V(f)) sont DANS l'intervalle matériau, et le
+    #     nominal est à un facteur < 5 ; LiNbO3 < 15 % de la perte mesurée
+    try:
+        import run_nilno_transfer as nt
+        rn = nt.main(verbose=False)
+        ok27, worst = True, 1.0
+        for (dev, H), r in rn.items():
+            qmeas = nt.DEVICES[dev]["Q_V"][H]
+            lo, hi = r["max_loss"]["Q"], r["min_loss"]["Q"]
+            ok27 &= lo <= qmeas <= hi
+            ratio = r["nom"]["Q"] / qmeas
+            worst = max(worst, max(ratio, 1 / ratio))
+            ok27 &= r["nom"]["inv_lno"] < 0.15 / qmeas
+        check("films Ni/LiNbO3 : 7 Q mesurés encadrés, nominal à un facteur "
+              "< 5, LiNbO3 < 15 % de la perte",
+              ok27 and worst < 5.0, f"pire facteur = {worst:.2f}")
+    except (ImportError, FileNotFoundError):
+        print("[SKIP] test 27 (nilno_devices.npz absent)")
 
     n_ok = sum(ok for _, ok in TESTS)
     print(f"\n{n_ok}/{len(TESTS)} PASS")

@@ -80,6 +80,15 @@ WANTED = [
     dict(key="caughey1965", doi="10.1115/1.3627262"),
     dict(key="dong2006metglas", doi="10.1063/1.2337996"),
     dict(key="rizzo2020these", doi="10.70675/66fce602z26b0z40c1z83d1z08d20353c521"),
+    # --- famille films Ni / LiNbO3 (section 5.8)
+    dict(key="huang2025sge", type="manual", text=(
+        "T. Huang, D. S. Bidouba, A. Gensbittel, Y. Zheng, E. Dandeu, "
+        "H. Talleb and M. Marangolo, Wireless powering of implanted "
+        "biomedical devices: investigation on the contribution of "
+        "magnetoelectric materials, Symposium de Genie Electrique (SGE 2025), "
+        "Toulouse, France, July 2025.")),
+    dict(key="warner1967", doi="10.1121/1.1910709"),
+    dict(key="roberts1967", doi="10.1016/0001-6160(67)90059-4"),
     dict(key="rizzo2019", doi="10.1109/ismict.2019.8743873"),
     dict(key="imboden2014", doi="10.1016/j.physrep.2013.09.003"),
     dict(key="yasumura2000", doi="10.1109/84.825786"),

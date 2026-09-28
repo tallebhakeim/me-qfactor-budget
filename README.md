@@ -36,7 +36,7 @@ Metglas laminates measured in K. Malleron's thesis (Sorbonne Universite,
 
 ```bash
 python3 run_budget.py        # full report + 3-panel figure
-python3 verify_qfactor.py    # verification suite (26 tests; 22 self-contained)
+python3 verify_qfactor.py    # verification suite (27 tests; 23 self-contained)
 python3 make_figures_en.py   # manuscript figures 1-7
 python3 run_disk_transfer.py # disk transfer report + figure 8
 python3 run_multiscale.py    # same-plates multiscale check + figure 4
@@ -54,7 +54,7 @@ verification suite skips it cleanly when absent. All budget results are
 produced by the self-contained scripts above.
 
 `make_refs.py` rebuilds `refs_verified.json`, the Crossref-canonical
-metadata of the 42 references: the manuscript bibliography is generated
+metadata of the 45 references: the manuscript bibliography is generated
 from this file, so no reference metadata is ever typed from memory.
 
 ## Files
@@ -66,10 +66,11 @@ from this file, so no reference metadata is ever typed from memory.
 | `qfactor_hysteresis.py` | generalized Rayleigh minor-loop loss, stress-equivalent field swing |
 | `run_budget.py` | report: reference budget, 4-sample validation, Q(h_ac), inverse bounds |
 | `qfactor_disk.py`, `run_disk_transfer.py` | radial-mode disk transfer (36 identified Q of Rizzo 2020, made consistent: Q_m = Q_tab·phi_p²; bar prestress convention) |
+| `run_nilno_transfer.py`, `make_nilno_curves.py`, `nilno_devices.npz` | third family: sputtered Ni (50 µm) on LiNbO3 plates (0°Y/36°Y/128°Y), no adhesive; eddy channel from measured incremental Ni properties, Jiles-Atherton minor-loop hysteresis, LiNbO3 floor; measured |Z|(f) and V(f) at 1 Oe |
 | `make_bench_curves.py`, `bench_disk_curves.npz` | three magnetically driven resonance curves of C2N disks (GeePs bench 2023, Rizzo annex): −3 dB bandwidths |
 | `run_multiscale.py`, `data_ulises/` | same-plates multiscale check: bare-plate impedance fits (BVD, projected Lorentzian) and assembly predictions; raw .mat files measured by U. Acevedo-Salas (GeePs, ANR BIOMEN, 2019) |
 | `run_do3d_crosscheck.py`, `make_do2019_curves.py` | confrontation with the fitted-damping 3-D A-V-u model of T. A. Do's thesis (Sorbonne Universite 2019): digitized figures 3.13 and 3.19(c); peak height reproduced, bandwidth not (Q 39 vs 18) |
-| `verify_qfactor.py` | 26 automated tests (analytic limits, sum rules, bandwidth-budget identity, mesh convergence, sample brackets, digitized-curve checks) |
+| `verify_qfactor.py` | 27 automated tests (analytic limits, sum rules, bandwidth-budget identity, mesh convergence, sample brackets, digitized-curve checks) |
 | `make_figures_en.py` | manuscript figures |
 | `fig_en_*.png` | pre-built figures |
 
