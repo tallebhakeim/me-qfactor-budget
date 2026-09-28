@@ -19,7 +19,9 @@ RHO_REL, NU = 5.64, 0.30                     # densité relative (Table 2), Pois
 EPS_R, TAND, D33 = 165.0, 0.045, 20e-12      # fig. 6-7 : eps_r, tan delta, d33 (pC/N)
 PHI = dict(pvdf=0.30, pzt=0.63, td=0.07)
 E_PH = dict(pvdf=2.5e9, pzt=60e9, td=30e9)   # modules de phase (Pa)
-ETA_PVDF = (0.06, 0.04, 0.10)                # 1/Q_m du PVDF : (nom, min, max)
+ETA_PVDF = (0.06, 0.02, 0.20)                # 1/Q_m du PVDF : (nom, min, max)
+# Q_m(PVDF) pris entre 5 et 50 : HYPOTHÈSE d'intervalle large (polymère à bas Q ;
+# Ohigashi 1976 = méthode de résonance et constantes complexes, valeur non relue).
 A_TD, SIG_TD, MUR_TD = 10e-6, 1.67e6, 5.0    # rayon des particules, conductivité
 
 
@@ -62,7 +64,54 @@ def main(verbose=True):
         print(f"part d'énergie de la matrice : Reuss {reuss:.2f}, Voigt {voigt:.3f}, au module mesuré {f_m:.2f}")
         print(f"Q prédit (matrice η = {ETA_PVDF[0]}) = {Q['nom']:.0f} ; intervalle [{Q['max_loss']:.0f} ; {Q['min_loss']:.0f}] ; bornes Voigt/Reuss extrêmes [{Q_bounds[1]:.0f} ; {Q_bounds[0]:.0f}]")
         print(f"Q mesuré (-3 dB, fig. 5) : {Qm[0]:.0f} (principal) / {Qm[1]:.0f} (encart)")
+    figure(out, z)
     return out
+
+
+def figure(out, z):
+    """fig_en_03.png : (a) alpha(f) digitalisée (Zeng 2015, fig. 5) contre les
+    lorentziennes au Q mesuré et au Q nominal du budget ; (b) budget 1/Q."""
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    from matplotlib.patches import Patch
+    from matplotlib.lines import Line2D
+    BLUE, RED, GREY, GREEN = "#4878a8", "#c1272d", "#666666", "#3a8f4a"
+    f, al = z["f_kHz"], z["alpha"]
+    i = int(np.argmax(al)); f0, ap = f[i], al[i]
+    fig, (a0, a1) = plt.subplots(1, 2, figsize=(9.8, 3.5))
+    a0.plot(f, al, ".", color=RED, ms=2.5, alpha=0.7,
+            label="measured, digitized (Zeng 2015, fig. 5)")
+    fl = np.linspace(60, 100, 600)
+    lowf = al[(f > 65) & (f < 72)]
+    base = float(np.median(lowf)) if lowf.size else float(al.min())
+    for Q, c, ls, lab in ((out["Q_meas"][0], RED, "-", f"Lorentzian at measured Q = {out['Q_meas'][0]:.0f}"),
+                          (out["Q"]["nom"], BLUE, "--", f"budget nominal Q = {out['Q']['nom']:.0f} (matrix share 0.37)"),
+                          (out["Q_bounds"][1], GREEN, ":", f"budget, Reuss bound Q = {out['Q_bounds'][1]:.0f}")):
+        a0.plot(fl, base + (ap - base) / np.sqrt(1 + (2 * Q * (fl - f0) / f0)**2), ls, color=c, lw=1.1, label=lab)
+    a0.set_xlim(60, 100); a0.set_ylim(0, 95)
+    a0.set_xlabel("frequency [kHz]"); a0.set_ylabel("α$_{ME}$ [mV cm$^{-1}$ Oe$^{-1}$]")
+    a0.set_title("(a) 0-3 PVDF/PZT/Terfenol-D disk, 1000 Oe, 2 Oe drive", fontsize=9)
+    a0.legend(fontsize=6.5, loc="upper left")
+    labels = ["dielectric\n(tan δ k²)", "Terfenol-D\nparticle eddy", "matrix\n(Voigt share)", "matrix\n(share 0.37)", "matrix\n(Reuss share)"]
+    vals = [out["inv_diel"], out["eta_td_eddy"] * 0.07, out["voigt"] * ETA_PVDF[0],
+            out["f_m"] * ETA_PVDF[0], out["reuss"] * ETA_PVDF[0]]
+    cols = [GREY, BLUE, GREEN, GREEN, GREEN]
+    a1.bar(range(5), [max(v * 1e3, 1.2e-3) for v in vals], color=cols, width=0.7)
+    a1.text(1, 2e-3, f"< {vals[1]*1e3:.0e}", ha="center", fontsize=7, color=BLUE)
+    for k in (2, 3, 4):
+        share = (out["voigt"], out["f_m"], out["reuss"])[k - 2]
+        a1.plot([k, k], [share * ETA_PVDF[1] * 1e3, share * ETA_PVDF[2] * 1e3], "-", color="k", lw=0.8)
+    a1.axhline(1e3 / out["Q_meas"][0], color=RED, lw=1.2, label=f"measured 1/Q (Q = {out['Q_meas'][0]:.0f}-{out['Q_meas'][1]:.0f})")
+    a1.axhline(1e3 / out["Q_meas"][1], color=RED, lw=1.2)
+    a1.set_yscale("log"); a1.set_ylim(1e-3, 300)
+    a1.set_xticks(range(5)); a1.set_xticklabels(labels, fontsize=7)
+    a1.set_ylabel("1/Q [10$^{-3}$]")
+    a1.set_title("(b) channels: laminate channels empty, matrix loss decides", fontsize=9)
+    a1.legend(handles=[Line2D([], [], color=RED, lw=1.2, label=f"measured 1/Q (Q = {out['Q_meas'][0]:.0f}-{out['Q_meas'][1]:.0f})"),
+                       Line2D([], [], color="k", lw=0.8, label="Q$_m$(PVDF) 5-50")], fontsize=6.5, loc="upper left")
+    fig.tight_layout(); fig.savefig(HERE / "fig_en_03.png", dpi=200)
+    plt.close(fig)
 
 
 if __name__ == "__main__":
