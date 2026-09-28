@@ -89,6 +89,9 @@ WANTED = [
         "Toulouse, France, July 2025.")),
     dict(key="warner1967", doi="10.1121/1.1910709"),
     dict(key="roberts1967", doi="10.1016/0001-6160(67)90059-4"),
+    # --- composite particulaire 0-3 polymère (section 6.1)
+    dict(key="zeng2015", doi="10.1016/j.jallcom.2014.11.097"),
+    dict(key="ohigashi1976", doi="10.1063/1.322685"),
     dict(key="rizzo2019", doi="10.1109/ismict.2019.8743873"),
     dict(key="imboden2014", doi="10.1016/j.physrep.2013.09.003"),
     dict(key="yasumura2000", doi="10.1109/84.825786"),

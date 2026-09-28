@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Vérification du PoC "Q par bilan d'énergie" v3 — 27 tests.
+Vérification du PoC "Q par bilan d'énergie" v3 — 28 tests.
 Auto-cohérence du modèle, limites analytiques (Foucault, Rayleigh, démag),
 monotonie des bornes, non-linéarité Q(H_ac), raideur circuit ouvert,
 confrontation aux 4 échantillons Malleron, et branchement FEM 2D (layer_eta).
@@ -314,6 +314,22 @@ def main():
               ok27 and worst < 5.0, f"pire facteur = {worst:.2f}")
     except (ImportError, FileNotFoundError):
         print("[SKIP] test 27 (nilno_devices.npz absent)")
+
+    # 28. COMPOSITE 0-3 POLYMÈRE (Zeng 2015, digitalisé) : Q(-3 dB) 10-25, canaux
+    #     des laminés < 1e-3, mesure dans les bornes Voigt/Reuss du canal matrice
+    try:
+        import run_03_polymer as p03
+        r3 = p03.main(verbose=False)
+        qz = r3["Q_meas"]
+        ok28 = all(10 <= q <= 25 for q in qz) and r3["inv_diel"] < 1e-3 \
+            and r3["eta_td_eddy"] < 1e-4 \
+            and r3["Q_bounds"][1] <= min(qz) and max(qz) <= r3["Q_bounds"][0]
+        check("0-3 polymère : Q mesuré 10-25, canaux laminés < 1e-3, mesure dans "
+              "les bornes Voigt/Reuss du canal matrice",
+              ok28, f"Q mesuré {qz[0]:.0f}/{qz[1]:.0f}, nominal {r3['Q']['nom']:.0f}, "
+              f"bornes [{r3['Q_bounds'][1]:.0f} ; {r3['Q_bounds'][0]:.0f}]")
+    except (ImportError, FileNotFoundError):
+        print("[SKIP] test 28 (zeng2015_curve.npz absent)")
 
     n_ok = sum(ok for _, ok in TESTS)
     print(f"\n{n_ok}/{len(TESTS)} PASS")

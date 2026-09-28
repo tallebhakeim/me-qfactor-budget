@@ -784,6 +784,48 @@
   "doi": "10.1016/0001-6160(67)90059-4"
  },
  {
+  "key": "zeng2015",
+  "type": "crossref",
+  "via": "doi",
+  "authors": [
+   "Yike Zeng",
+   "Guoqiang Bao",
+   "Jinqiao Yi",
+   "Guangzu Zhang",
+   "Shenglin Jiang"
+  ],
+  "title": "The influence of inducing magnetic field on the magnetoelectric effect of particulate magnetoelectric composites",
+  "container": "Journal of Alloys and Compounds",
+  "short_container": [
+   "Journal of Alloys and Compounds"
+  ],
+  "volume": "630",
+  "issue": "",
+  "page": "183-188",
+  "article_number": "",
+  "year": 2015,
+  "doi": "10.1016/j.jallcom.2014.11.097"
+ },
+ {
+  "key": "ohigashi1976",
+  "type": "crossref",
+  "via": "doi",
+  "authors": [
+   "Hiroji Ohigashi"
+  ],
+  "title": "Electromechanical properties of polarized polyvinylidene fluoride films as studied by the piezoelectric resonance method",
+  "container": "Journal of Applied Physics",
+  "short_container": [
+   ""
+  ],
+  "volume": "47",
+  "issue": "3",
+  "page": "949-955",
+  "article_number": "",
+  "year": 1976,
+  "doi": "10.1063/1.322685"
+ },
+ {
   "key": "rizzo2019",
   "type": "crossref",
   "via": "doi",
