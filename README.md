@@ -72,6 +72,7 @@ from this file, so no reference metadata is ever typed from memory.
 | `run_multiscale.py`, `data_ulises/` | same-plates multiscale check: bare-plate impedance fits (BVD, projected Lorentzian) and assembly predictions; raw .mat files measured by U. Acevedo-Salas (GeePs, ANR BIOMEN, 2019) |
 | `run_do3d_crosscheck.py`, `make_do2019_curves.py` | confrontation with the fitted-damping 3-D A-V-u model of T. A. Do's thesis (Sorbonne Universite 2019): digitized figures 3.13 and 3.19(c); peak height reproduced, bandwidth not (Q 39 vs 18) |
 | `verify_qfactor.py` | 28 automated tests (analytic limits, sum rules, bandwidth-budget identity, mesh convergence, sample brackets, digitized-curve checks) |
+| `conv_fem2d.py`, `conv_fem2d.json` | mesh convergence of the 2-D finite-element response (alpha_res, f_r, Q at −3 dB), sensitivity of the budget to the demagnetizing factor (uniform-prism 0.0724 vs nonlinear 3-D 0.053), sampling resolution of every digitized resonance curve |
 | `make_figures_en.py` | manuscript figures |
 | `fig_en_*.png` | pre-built figures |
 
