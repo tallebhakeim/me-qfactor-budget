@@ -8,3 +8,5 @@ authors:
     affiliation: "Sorbonne Universite, CNRS, GeePs, Paris; Universite Paris-Saclay, CentraleSupelec, CNRS, GeePs, Gif-sur-Yvette, France"
 license: MIT
 repository-code: "https://github.com/tallebhakeim/me-qfactor-budget"
+version: "1.0.0"
+doi: "10.5281/zenodo.23641024"

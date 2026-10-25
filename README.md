@@ -76,6 +76,11 @@ from this file, so no reference metadata is ever typed from memory.
 | `make_figures_en.py` | manuscript figures |
 | `fig_en_*.png` | pre-built figures |
 
+## Citation
+
+Archived on Zenodo: concept DOI [10.5281/zenodo.23641023](https://doi.org/10.5281/zenodo.23641023)
+(always the latest version); version 1.0.0: 10.5281/zenodo.23641024. See `CITATION.cff`.
+
 ## License
 
 MIT (see LICENSE). Measured values quoted in the scripts come from the
